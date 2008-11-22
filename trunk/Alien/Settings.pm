@@ -61,9 +61,11 @@ sub handler {
 	}
 
 	my @ignore = ( @{$prefs->get('ignore')}, '' );
+	my @mplayer = $plugin->mplayer;
 
 	$params->{'ignorelist'} = \@ignore;
 	$params->{'opmlfile'} = $plugin->menuUrl;
+	$params->{'mplayer'} = \@mplayer;
 
 	return $class->SUPER::handler($client, $params);
 }
