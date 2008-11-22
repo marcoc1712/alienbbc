@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head title="Virgin Radio">
+    <expansionState></expansionState>
+  </head>
+  <body>
+	<outline text="Virgin Radio UK: The music we all love"                        URL="http://mp3-vr-128.smgradio.com" type="audio"/>
+	<outline text="Virgin Radio Classic Rock: The original classic rock station"  URL="http://mp3-vc-128.smgradio.com" type="audio"/>
+	<outline text="Virgin Xtreme: New music - no limits"                          URL="http://mp3-vx-128.smgradio.com" type="audio"/>
+	<outline text="Virgin Radio Groove: London's digital soul station"            URL="http://mp3-gr-128.smgradio.com" type="audio"/>
+  </body>
+</opml>

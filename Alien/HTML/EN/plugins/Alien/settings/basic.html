@@ -1,0 +1,35 @@
+[% PROCESS settings/header.html %]
+
+	<div class="settingSection">
+
+		<div class="prefHead">[% "PLUGIN_ALIENBBC" | string | upper %]</div>
+		<div class="prefDesc">[% "PLUGIN_ALIENBBC_DESC" | string %]</div>
+
+		<div class="prefHead">[% "PLUGIN_ALIENBBC_ADDON" | string |	upper %]</div>
+		<div class="prefDesc">[% "PLUGIN_ALIENBBC_ADDON_DESC" | string %]</div>
+
+		<div class="prefHead">[% "SETUP_PLUGIN_ALIENBBC_MENU" | string | upper %]</div>
+		<div class="prefDesc">[% "SETUP_PLUGIN_ALIENBBC_MENU_DESC" | string %]</div>
+
+		<a href="[% webroot %]plugins/Favorites/index.html?new=[% opmlfile %]&autosave">[% "SETUP_PLUGIN_ALIENBBC_EDIT_MENU" | string %]</a>
+		<a href="[% webroot %]plugins/Alien/settings/basic.html?reset=1">[% "SETUP_PLUGIN_ALIENBBC_RESET" | string %]</a>
+
+		<div class="prefHead">[% "SETUP_PLUGIN_ALIENBBC_IGNORE" | string | upper %]</div>
+		<div class="prefDesc">[% "SETUP_PLUGIN_ALIENBBC_IGNORE_DESC" | string %]</div>
+
+		<table border="0" cellspacing="7" cellpadding="7">
+
+		[% FOREACH entry = ignorelist %]
+
+			<tr>
+
+			<td><input type="text" class="stdedit" name="ignore" id="ignore" value="[% entry %]" size="60" /></td>
+
+			</tr>
+
+		[% END %]
+
+		</table>
+	</div>
+
+[% PROCESS settings/footer.html %]

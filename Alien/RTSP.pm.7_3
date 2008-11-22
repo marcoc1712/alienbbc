@@ -1,0 +1,238 @@
+#
+# AlienBBC Copyright (C) Jules Taplin, Craig Eales, Triode, Neil Sleightholm, Bryan Alton 2004-2008
+#
+# $Id: RTSP.pm.7_3,v 1.3 2008/10/30 10:10:52 triode Exp $
+#
+# This plugin is free software; you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License, version 2.
+#
+package Plugins::Alien::RTSP;
+
+use strict;
+
+use base qw(Slim::Player::Pipeline);
+
+use Slim::Utils::Strings qw(string);
+use Slim::Utils::Misc;
+use Slim::Utils::Log;
+use Slim::Utils::Prefs;
+use Slim::Player::Song;
+
+use Plugins::Alien::RTSPScanHeaders;
+
+my $log = logger('plugin.alienbbc');
+
+Slim::Player::ProtocolHandlers->registerHandler('rtsp', __PACKAGE__);
+
+Slim::Formats::Playlists->registerParser('rtsppl', 'Plugins::Alien::Playlists::RTSPPL');
+Slim::Formats::Playlists->registerParser('smilpl', 'Plugins::Alien::Playlists::SMIL');
+
+sub isRemote { 1 }
+
+sub new {
+	my $class = shift;
+	my $args = shift;
+
+	my $url    = $args->{'url'};
+	my $client = $args->{'client'};
+	my $transcoder = $args->{'transcoder'};
+	my $seekdata = $args->{'song'}->{'seekdata'};
+	my $rtspmetadata = $args->{'song'}->{'scanData'}->{$url};
+
+	# Check client - only stream to known slim clients
+	if (!defined($client) || !$client->isPlayer()) {
+
+		$log->warn("Alien only streams to Slim players");
+
+		return undef;
+	}
+
+	Slim::Music::Info::setContentType($url, 'rtsp');
+
+ 	my $track    = Slim::Schema->rs('Track')->objectForUrl({
+		'url'      => $url,
+		'readTags' => 1
+	});
+
+
+# RTSP URL headers are scanned but it usually completes after "new" is called except when a Seek hgas been done
+# then the RTSP URL is nOT scanned and so we need to use RTSP metadata  
+
+	if ( $rtspmetadata ) {
+		if ( defined ($rtspmetadata->{'endtime'})) {
+		  $client->streamingProgressBar( {
+				'url'     => $url,
+				'bitrate' => $rtspmetadata->{'avgbitrate'} ,
+				'duration'=> int($rtspmetadata->{'endtime'}/1000),
+		  } );
+		};
+	}
+
+	if (defined ($seekdata->{timeOffset})) {
+		my $newtime = int($seekdata->{timeOffset});
+
+		if ( $url =~ m"\Artsp://(.+)(\.ra\?|\.rm\?)"){
+			if ($url =~m/((\?start=)|(\&start=))/ ) {
+				$url =~ m/\A(.+)start=[\d:\."]+(.*)\z/;
+        	      		$url = $1 . "start=$newtime" . $2;
+			} 
+			else {
+				$url .= "&start=" . $newtime;
+			}
+		} 
+		else {
+			$url .= "?start=" . $newtime;
+		}
+
+		$client->playingSong->{startOffset} = $newtime;
+		$client->master->remoteStreamStartTime( Time::HiRes::time() - $newtime );
+	}
+
+	$log->debug("Modified url to play $url");
+
+	my $quality = preferences('server')->client($client)->get('lameQuality');
+
+	my $command = Slim::Player::TranscodingHelper::tokenizeConvertCommand2(
+		$transcoder, $url, $url, 1, $quality
+	);
+
+	my $self = $class->SUPER::new(undef, $command);
+
+	${*$self}{'contentType'} = $transcoder->{'streamformat'};
+
+	return $self;
+}
+
+sub canHandleTranscode {
+	my ($self, $song) = @_;
+	
+	return 1;
+}
+
+sub getStreamBitrate {
+	my ($self, $maxRate) = @_;
+	
+	return Slim::Player::Song::guessBitrateFromFormat(${*$self}{'contentType'}, $maxRate);
+}
+
+sub contentType {
+	my $class = shift;
+
+	return ${*$class}{'contentType'};
+}
+
+sub scanStream {
+	my $class = shift;
+
+	Plugins::Alien::RTSPScanHeaders->new(@_);
+}
+
+sub getMetadataFor {
+	my ( $class, $client, $url, $forceCurrent ) = @_;
+
+	my $icon = Plugins::Alien::Plugin->_pluginDataFor('icon');
+
+	$log->debug("Begin Function for $url $icon");
+	
+	my $song = $client->currentSongForUrl($url);
+	my $track = $song->currentTrack() if $song;
+	my $rtspmetadata = $song->{'scanData'}->{$track->url} if $song;
+
+	if (defined($track)) {
+		if ($track->title eq $url && defined ($rtspmetadata->{'title'} )) {
+			Slim::Music::Info::setCurrentTitle( $url, $rtspmetadata->{'title'} . "  ". $rtspmetadata->{'author'}  );
+			$track->title ($rtspmetadata->{'title'}) ;
+			$track->update;
+		}
+	}
+
+	return {
+		title    =>  $rtspmetadata->{'title'}, 
+		artist   =>  $rtspmetadata->{'author'} ,
+		duration =>  int($rtspmetadata->{'endtime'}/1000),
+		bitrate  =>  defined($track) ? $track->prettyBitRate : $rtspmetadata->{'avgbitrate'},
+		icon   => $icon,
+		cover  => $icon,
+		type   => 'RTSP',
+	};
+
+}
+
+sub getIcon {
+	my ( $class, $url ) = @_;
+	$log->info( " Get Icon called url=$url");
+	return 'html/images/radio.png';
+}
+
+sub canSeek {
+	my ( $class, $client, $song ) = @_;
+	
+# Can only seek if duration is known
+	my $seconds = $song->duration();
+
+	if ($seconds) {
+	  return 1;
+	}
+	if ($log->is_debug) {
+		$log->debug("Cannot seek duration ($seconds) may be undefined or 0");
+	}
+	return 0;
+}
+
+sub canSeekError {
+	my ( $class, $client, $song ) = @_;
+	
+	my $url = $song->currentTrack()->url;
+	
+	my ($rtspmetadata, $mimetype);
+	if ($rtspmetadata = $song->{'scanData'}->{$url}) {
+		$mimetype = defined( $rtspmetadata->{'mimetype'}) ? $rtspmetadata->{'mimetype'} : "unassigned";	
+	} ;
+	
+	if ($log->is_debug) {
+		my $ct = Slim::Music::Info::contentType($url);
+		$log->debug( "RTSP CanSeekError content type $ct mime type=". $mimetype . " url=$url " );
+	}
+
+	if ( $mimetype eq 'audio/x-pn-multirate-realaudio-live' ) {
+		return ( 'SEEK_ERROR_LIVE' );
+	} 
+
+	if ( !$song->duration() ) {
+		return 'SEEK_ERROR_RTSP_UNKNOWN_DURATION';
+	}
+	
+	return 'SEEK_ERROR_RTSP';
+}
+
+sub getSeekData {
+
+	my ( $class, $client, $song, $newtime ) = @_;
+	
+	# Do it all later at open time
+	return {timeOffset => $newtime};
+}
+
+
+#
+# In the future it may be necessary to distinguish between different format types using rtsp://
+# but at the moment only rtsp type used.  Format returned should be the same as suffixes in custom-types.conf
+# and used in custom-convert.conf.
+#
+
+sub getFormatForURL {
+	my $classOrSelf = shift;
+	my $url = shift;
+	$log->debug("Begin Function for $url");	
+
+	return 'rtsp';
+}
+
+# XXX - I think that we scan the track twice, once from the playlist and then again when playing
+sub scanUrl {
+	my ( $class, $url, $args ) = @_;
+	
+	Slim::Utils::Scanner::Remote->scanURL($url, $args);
+}
+
+1;
