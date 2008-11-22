@@ -39,6 +39,8 @@
 #           - Remove alien skip code - only support 7.1 song scanner
 #           - Fix RTSPScanHeaders to send CRLFCRLF at end of header
 #   2.3b1   - Update to support 7.3 transcoding changes
+#   2.4a1   - Create 7.3 extension downloader package
+#           - Add mplayer downloader for windows (so we can use the extension downloader)
 
 package Plugins::Alien::Plugin;
 
@@ -83,6 +85,11 @@ sub initPlugin {
 		tag  => 'alien',
 		menu => 'radios'
 	);
+
+	if (&Slim::Utils::OSDetect::isWindows && Slim::Utils::OSDetect::isWindows()) {
+		require Plugins::Alien::WindowsDownloader;
+		Plugins::Alien::WindowsDownloader->checkMplayer($class);
+	}
 
 	Plugins::Alien::Settings->importNewMenuFiles;
 }
