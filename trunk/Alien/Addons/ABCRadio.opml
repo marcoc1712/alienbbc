@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head title="ABC Radio - Australia">
+    <expansionState></expansionState>
+  </head>
+  <body>
+      <outline text="DIG Internet Radio - dig Radio"  URL="http://www.abc.net.au/dig/dig.ram"  type="audio"/>
+      <outline text="DIG Internet Radio - dig JAZZ"  URL="http://www.abc.net.au/streaming/digjazz.ram" type="audio"/>
+      <outline text="DIG Internet Radio - dig COUNTRY"  URL="http://www.abc.net.au/streaming/digcountry.ram" type="audio"/>
+      <outline text="Triple J"  URL="http://www.abc.net.au/streaming/triplej/triplej.m3u" type="audio"/>
+      <outline text="ABC Classic FM"  URL="http://www.abc.net.au/streaming/classic/classicfm.m3u" type="audio"/>
+      <outline text="ABC Local Radio - Coast FM"  URL="http://www.abc.net.au/streaming/coast.ram" type="audio"/>
+      <outline text="ABC Local Radio - 702 ABC Sydney"  URL="http://abc.net.au/streaming/702stream.ram" type="audio"/>
+      <outline text="ABC NewsRadio"  URL="http://www.abc.net.au/streaming/newsradio.ram" type="audio"/>
+      <outline text="Radio Australia (English Service)"  URL="http://www.abc.net.au/streaming/ra.ram" type="audio"/>
+      <outline text="Radio Australia (Language Service)"  URL="http://www.abc.net.au/streaming/raflp.ram" type="audio"/>
+      <outline text="Radio National"  URL="http://www.abc.net.au/streaming/RN.ram" type="audio"/>
+      <outline text="ABC Podcast"  URL="http://www.abc.net.au/services/podcasting/programs.htm"  parser="Plugins::Alien::Addons::ABCPodcastParser" />
+  </body>
+</opml>

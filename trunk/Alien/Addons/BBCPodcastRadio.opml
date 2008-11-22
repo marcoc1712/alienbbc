@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head title="BBC Podcasts">
+    <expansionState></expansionState>
+  </head>
+  <body>
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/radio1"        parser="Plugins::Alien::Addons::BBCPodcastParser" text="Radio 1" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/radio2"        parser="Plugins::Alien::Addons::BBCPodcastParser" text="Radio 2" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/radio3"        parser="Plugins::Alien::Addons::BBCPodcastParser" text="Radio 3" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/radio4"        parser="Plugins::Alien::Addons::BBCPodcastParser" text="Radio 4" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/fivelive"      parser="Plugins::Alien::Addons::BBCPodcastParser" text="Radio 5 Live" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/1xtra"         parser="Plugins::Alien::Addons::BBCPodcastParser" text="1Xtra" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/6music"        parser="Plugins::Alien::Addons::BBCPodcastParser" text="6 Music" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/bbc7"          parser="Plugins::Alien::Addons::BBCPodcastParser" text="BBC 7" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/asiannetwork"  parser="Plugins::Alien::Addons::BBCPodcastParser" text="Asian Network" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/worldservice"  parser="Plugins::Alien::Addons::BBCPodcastParser" text="World Service" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/scotland"      parser="Plugins::Alien::Addons::BBCPodcastParser" text="Radio Scotland / Nan Gaidheal" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/ulster"        parser="Plugins::Alien::Addons::BBCPodcastParser" text="Radio Ulster / Foyle" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/wales"         parser="Plugins::Alien::Addons::BBCPodcastParser" text="Radio Wales / Cymru" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/local"         parser="Plugins::Alien::Addons::BBCPodcastParser" text="English local radio" />
+    <outline URL="http://www.bbc.co.uk/radio/podcasts/directory/station/crossstation"  parser="Plugins::Alien::Addons::BBCPodcastParser" text="Cross-station" />
+  </body>
+</opml>

@@ -1,0 +1,72 @@
+# String file for Alien plugin
+
+# $Id$
+
+PLUGIN_ALIENBBC
+	EN	Alien BBC
+
+PLUGIN_ALIENBBC_NO_CONVERT_CMD
+	EN	RTSP Convert Error - Check File Types
+	DE	RTSP Konvertierungsfehler - bitte Dateitypen prüfen
+	ES	Error De Conversión RTSP - Verificar Tipo de Archivos
+
+PLUGIN_ALIENBBC_DESC
+	EN	The AlienBBC plugin is designed to allow you to listen to BBC Radio streams on your SqueezeBox.  It also adds the ability to listen to many other radio streams.
+	DE	AlienBBC erlaubt es, BBC Radioprogramme und andere Streams auf der SqueezeBox anzuhören.
+	ES	El plugin AlienBBC permite escuchar programas de Radio BBC en tu Squeezebox.
+
+PLUGIN_ALIENBBC_ADDON
+	EN	AlienBBC Addons
+
+PLUGIN_ALIENBBC_ADDON_DESC
+	EN	The radio stations supported by AlienBBC can be extended by the addition of AlienBBC Addons.  Addons are installed by unzipping them into the Plugins/Alien/Addon folder and restarting the server.  New menu items provided by the addon should automatically appear in the AlienBBC station list.
+
+PLUGIN_ALIENBBC_SKIP
+	EN	Skip: %3d mins
+	DE	Überspringe %3d Minuten
+
+PLUGIN_ALIENBBC_SKIP_FWD
+	EN	Skip Forwards in Stream
+
+PLUGIN_ALIENBBC_SKIP_REW
+	EN	Skip Back in Stream
+
+PLUGIN_ALIENBBC_START
+	EN	Start: 
+
+PLUGIN_ALIENBBC_SKIPSTART
+	EN	Skip: Start
+
+SETUP_PLUGIN_ALIENBBC_IGNORE
+	EN	Ignore list
+	DE	Liste ignorieren
+	ES	Lista de ignorar
+
+SETUP_PLUGIN_ALIENBBC_IGNORE_DESC
+	EN	Some BBC streams include a station ident that is broadcast before the main station stream. This configuration allows you to ignore these streams, by default the Radio 2 ident (r2online_id.rm) is ignored.
+	DE	Einige BBC Stream beinhalten eine Identifikation, welche vor dem eigentlichen Inhalte gesendet wird. Diese Einstellung lässt es zu, diesen Stream zu übergehen. Standardmässig ist dies für Radio2 (r2online_id.rm) der Fall.
+	ES	Algunos streams de BBC incluyen una identificación de estación que se transmite antes que el stream principal de la estación. Esta configuración permite ignorar estos streams, por defecto se ignora la identificación de Radio 2 (r2online_id.rm).
+
+SETUP_PLUGIN_ALIENBBC_EDIT_MENU
+	EN	Edit Menu
+
+SETUP_PLUGIN_ALIENBBC_RESET
+	EN	Reset Menu
+
+SETUP_PLUGIN_ALIENBBC_MENU
+	EN	Station Menu
+
+SETUP_PLUGIN_ALIENBBC_MENU_DESC
+	EN	You may edit the top level station menu to delete unwanted items or rearrange the order of the top level menu using the Edit Menu link below.  The Reset Menu link resets the menu to include all default stations plus all Addon stations which have been installed.
+
+RTSP
+	EN	RTSP
+
+SEEK_ERROR_RTSP
+	EN	Cannot seek in this RTSP stream
+
+SEEK_ERROR_RTSP_UNKNOWN_DURATION
+	EN	Cannot seek with unknown duration
+
+SEEK_ERROR_RTSP_UNKNOWN_BITRATE
+	EN	Cannot seek with unknown bitrate

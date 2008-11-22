@@ -1,0 +1,10 @@
+# AlienBBC - windows version
+
+rtsp wav * *
+	[mplayer] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=#PIPE# $FILE$
+rtsp mp3 * *
+	[mplayer] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=#PIPE# $FILE$ | [lame] --silent -r -x -q $QUALITY$ -b $BITRATE$ - -
+rtsp flc * *
+	[mplayer] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=#PIPE# $FILE$ | [flac] -cs --totally-silent --endian=little --channels=2 --sign=signed --bps=16 --sample-rate=44100 --compression-level-0 -
+
+# To boost volume, change resample=44100:0:1 to volume=x:sc,resample=44100:0:1, where x is a number e.g. 8

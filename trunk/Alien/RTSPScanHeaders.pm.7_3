@@ -1,0 +1,174 @@
+package Plugins::Alien::RTSPScanHeaders;
+
+use strict;
+
+use base qw(Slim::Networking::Async);
+
+use URI;
+use Slim::Utils::Log;
+use Slim::Utils::Misc;
+use Slim::Utils::Prefs;
+use MIME::Base64 qw(decode_base64);
+use Socket qw(:crlf);
+
+__PACKAGE__->mk_classaccessors( qw(inheader raw contentlength len fields ) );
+
+my $log = logger('plugin.alienbbc');
+
+
+sub new {
+	my $ref = shift;
+	my $url = shift;
+	my $self = $ref->SUPER::new;
+
+	my $u = URI->new($url);
+
+	my $request = "DESCRIBE $url RTSP/1.0" . $CRLF . $CRLF;
+	my $timeout = preferences('server')->get('remotestreamtimeout') || 10;
+
+	$self->write_async( {
+		host        => $u->host,
+		port        => $u->port,
+		content_ref => \$request,
+		Timeout     => $timeout,
+		skipDNS     => 0,
+		onError     => \&_error,
+		onRead      => \&_read,
+		passthrough => [ $url, @_ ],
+	} );
+
+	$self->raw('');
+	$self->inheader(1);
+	$self->len(0);
+	$self->fields({});
+}
+
+sub _error {
+	my $self  = shift;
+	my $errormsg = shift;
+	my $url   = shift;
+	my $track = shift;
+	my $args  = shift;
+
+	$self->disconnect;
+
+	my $error = "error connecting to url: error=$errormsg url=$url";
+
+	$log->warn($error);
+	# call the callback with error message
+	$args->{'cb'}->( undef, $error, @{ $args->{'pt'} || [] } );
+}
+
+
+sub _read {
+	my $self  = shift;
+	my $url   = shift;
+	my $track = shift;
+	my $args  = shift;
+	my $buf;
+	my $client = $args->{client};
+
+	my $read = sysread($self->socket, $buf, 4096); # do our own sysread as $self->socket->sysread assumes http
+
+	my $raw  = $self->raw . $buf;
+	my $len  = $self->len;
+
+	if ($read == 0) {
+		$self->_error("End of file", $url, $track, $args);
+		return;
+	}
+
+	while ($raw =~ /(.*)\r\n/) {
+
+		my $line = $1;
+
+		$raw = substr($raw, length($line) + 2);
+
+		if ($self->inheader) {
+
+			if ($line !~ /\w/) {
+				$self->inheader(0);
+			}
+
+			if ($line =~ /RTSP\/1.0 (\d+) (\w+)/ && $1 != 200) {
+				# we did not get 200 OK as the response message, bail out
+				$self->_error($line, $url, $track, $args);
+				return;
+			}
+
+			if ($line =~ /Content-length: (\d+)/) {
+				$self->contentlength($1);
+			}
+
+		} else {
+
+			$len = $len + length($line) + 2;
+
+			if ($line =~ /length:npt=(\d+\.\d+)/) {
+				$self->fields->{'length'} = $1;
+			}
+
+			if ($line =~ /mimetype:string;"(.*)"/) {
+				$self->fields->{'mimetype'} = $1;
+			}
+
+			if ($line =~ /AvgBitRate:integer;(\d+)/) {
+				$self->fields->{'avgbitrate'} = $1;
+			}
+
+			if ($line =~ /EndTime:integer;(\d+)/) {
+				$self->fields->{'endtime'} = $1;
+			}
+
+			if ($line =~ /Title:buffer;"(.*)"/) {
+				$self->fields->{'title'} = decode_base64($1);
+				chop $self->fields->{'title'};
+			}
+
+			if ($line =~ /Author:buffer;"(.*)"/) {
+				$self->fields->{'author'} = decode_base64($1);
+				chop $self->fields->{'author'};
+			}
+		}
+	}
+
+	$self->raw( $raw );
+	$self->len( $len );
+
+	if (defined $self->contentlength && $self->contentlength == $self->len) {
+
+		$self->disconnect;
+
+		# we need to stash this for later...
+		$track->bitrate( $self->fields->{'avgbitrate'} );
+		$track->secs(int ($self->fields->{'endtime'}/1000) );
+		$track->update;
+
+		my $secs ; 
+
+		if ( defined ($self->fields->{'endtime'})) {
+		  $secs = int($self->fields->{'endtime'}/1000);
+#		  $client->streamingProgressBar( {
+#				'url'     => $url,
+#				'bitrate' => $self->fields->{'avgbitrate'} ,
+#				'duration'=> $secs,
+#		  } );
+		};
+
+		# Save this metadata for the RTSP protocol handler to use
+		if ( my $song = $args->{'song'} ) {
+			$song->{'scanData'} ||= {}; 
+			$song->{'scanData'}->{$track->url} = {
+				avgbitrate => $self->fields->{'avgbitrate'} ,
+				endtime    => $self->fields->{'endtime'},
+				title      => $self->fields->{'title'},
+				author     => $self->fields->{'author'},
+				mimetype   => $self->fields->{'mimetype'},
+			};
+		}
+
+		$args->{'cb'}->( $track, undef, @{ $args->{'pt'} || [] } );
+	}
+}
+
+1;

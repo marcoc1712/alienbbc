@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head title="RTE Radio Ireland">
+    <expansionState></expansionState>
+  </head>
+  <body>
+    <outline URL="http://dynamic.rte.ie/av/live/radio/radio1.smil"        parser="Plugins::Alien::Addons::RTEParser" text="Radio 1 Live" type="audio" />
+    <outline URL="http://dynamic.rte.ie/av/live/radio/radio1extra.smil"   parser="Plugins::Alien::Addons::RTEParser" text="Radio 1 Extra" type="audio" />
+    <outline URL="http://dynamic.rte.ie/av/live/radio/2fm.smil"           parser="Plugins::Alien::Addons::RTEParser" text="2Fm Live" type="audio" />
+    <outline URL="http://dynamic.rte.ie/av/live/radio/lyric.smil"         parser="Plugins::Alien::Addons::RTEParser" text="Lyric FM" type="audio" />
+    <outline URL="http://dynamic.rte.ie/av/live/radio/rnag.smil"          parser="Plugins::Alien::Addons::RTEParser" text="RNaG (Irish Language)" type="audio" />
+    <outline URL="http://dynamic.rte.ie/quickaxs/news1pm.smil"            parser="Plugins::Alien::Addons::RTEParser" text="News @ 1pm" type="audio" />
+    <outline URL="http://dynamic.rte.ie/quickaxs/209-rte-morningireland.smil" parser="Plugins::Alien::Addons::RTEParser" text="Morning Ireland" type="audio" />
+  </body>
+</opml>

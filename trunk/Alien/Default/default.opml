@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head title="Alien BBC">
+    <expansionState></expansionState>
+  </head>
+  <body>
+	<outline text="BBC Live Streams">
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_one"      parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio 1 Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_1xtra"          parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio 1Xtra Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_two"      parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio 2 Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_three"    parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio 3 Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_four"     parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio 4 Live" />
+		<outline URL="http://www.bbc.co.uk/radio4/ram/lwg2.ram"                 type="audio" text="Radio 4 LW Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_five_live"  parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio 5 Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_five_live_sports_extra"    parser="Plugins::Alien::Parsers::iPlayerPlayableParser" text="Radio 5 Live sports Extra" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_6music"         parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio 6 Music Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_7"              parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="BBC 7 Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_asian_network"  parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="BBC Asian Network Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_foyle"    parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio Foyle Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_scotland" parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio Scotland Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_ulster"   parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio Ulster Live" />
+		<outline URL="http://www.bbc.co.uk/iplayer/playlive/bbc_radio_wales"    parser="Plugins::Alien::Parsers::iPlayerPlayableParser" type="playlist" text="Radio Wales Live" />
+	</outline>
+
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_radio_one"    parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio 1" topmenu="1" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_radio_two"    parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio 2" topmenu="1" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_radio_three"  parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio 3" topmenu="1" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_radio_four"   parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio 4" topmenu="1" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_radio_five_live" parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio 5 live" topmenu="1" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_6music"         parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio 6 Music" topmenu="1" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_7"              parser="Plugins::Alien::Parsers::iPlayerParser" text="BBC 7" topmenu="1" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_1xtra"        parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio 1Xtra" topmenu="1" />
+	<outline text="BBC Local Radio" URL="http://www.bbc.co.uk/radio/aod/networks/localradio/list.shtml" parser="Plugins::Alien::Parsers::AodParser" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_asian_network"  parser="Plugins::Alien::Parsers::iPlayerParser" text="Asian network" topmenu="1" />
+	<outline text="Radio Cymru" URL="http://www.bbc.co.uk/radio/aod/networks/cymru/audiolist.shtml" parser="Plugins::Alien::Parsers::AodParser" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_radio_foyle"    parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio Foyle" topmenu="1" />
+	<outline text="Radio nan Gaidheal" URL="http://www.bbc.co.uk/radio/aod/networks/nangaidheal/audiolist.shtml" parser="Plugins::Alien::Parsers::AodParser" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_radio_scotland" parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio Scotland" topmenu="1" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_radio_ulster"   parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio Ulster" topmenu="1" />
+	<outline URL="http://www.bbc.co.uk/iplayer/radio/bbc_radio_wales"    parser="Plugins::Alien::Parsers::iPlayerParser" text="Radio Wales" topmenu="1" />
+	<outline text="World Service" URL="http://www.bbc.co.uk/radio/aod/networks/wservice/audiolist.shtml" parser="Plugins::Alien::Parsers::AodParser" />
+	<outline text="Listen Again A to Z">
+		<outline URL="http://www.bbc.co.uk/iplayer/a/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="A programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/b/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="B programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/c/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="C programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/d/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="D programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/e/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="E programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/f/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="F programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/g/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="G programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/h/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="H programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/i/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="I programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/j/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="J programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/k/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="K programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/l/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="L programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/m/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="M programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/n/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="N programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/o/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="O programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/p/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="P programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/q/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="Q programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/r/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="R programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/s/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="S programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/t/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="T programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/u/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="U programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/v/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="V programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/w/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="W programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/x/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="X programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/y/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="Y programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/z/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="Z programs" />
+		<outline URL="http://www.bbc.co.uk/iplayer/0-9/radio"  parser="Plugins::Alien::Parsers::iPlayerParser" text="0-9 programs" />
+	</outline>
+	<outline text="Categories">
+		<outline URL="http://www.bbc.co.uk/iplayer/categories/childrens/radio" parser="Plugins::Alien::Parsers::iPlayerParser" text="Childrens" />
+		<outline URL="http://www.bbc.co.uk/iplayer/categories/comedy/radio"    parser="Plugins::Alien::Parsers::iPlayerParser" text="Comedy" />
+		<outline URL="http://www.bbc.co.uk/iplayer/categories/drama/radio"     parser="Plugins::Alien::Parsers::iPlayerParser" text="Drama" />
+		<outline URL="http://www.bbc.co.uk/iplayer/categories/entertainment/radio"       parser="Plugins::Alien::Parsers::iPlayerParser" text="Entertainment" />
+		<outline URL="http://www.bbc.co.uk/iplayer/categories/factual/radio"   parser="Plugins::Alien::Parsers::iPlayerParser" text="Factual" />
+		<outline URL="http://www.bbc.co.uk/iplayer/categories/music/radio"     parser="Plugins::Alien::Parsers::iPlayerParser" text="Music" />
+		<outline URL="http://www.bbc.co.uk/iplayer/categories/news/radio"      parser="Plugins::Alien::Parsers::iPlayerParser" text="News" />
+		<outline URL="http://www.bbc.co.uk/iplayer/categories/religion_and_ethics/radio" parser="Plugins::Alien::Parsers::iPlayerParser" text="Religion Ethics" />
+		<outline URL="http://www.bbc.co.uk/iplayer/categories/sport/radio"     parser="Plugins::Alien::Parsers::iPlayerParser" text="Sport" />
+	</outline>
+
+	<outline URL="http://www.bbc.co.uk/iplayer/search/radio/?q={QUERY}"  type="search"  parser="Plugins::Alien::Parsers::iPlayerSearchParser" text="Search" />
+	<outline text="Alternate Listen Again">
+		<outline text="Radio 1" URL="http://www.bbc.co.uk/radio/aod/availability/radio1.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Radio 2" URL="http://www.bbc.co.uk/radio/aod/availability/radio2.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Radio 3" URL="http://www.bbc.co.uk/radio/aod/availability/radio3.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Radio 4" URL="http://www.bbc.co.uk/radio/aod/availability/radio4.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Radio 5 Live" URL="http://www.bbc.co.uk/radio/aod/availability/fivelive.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="1Xtra" URL="http://www.bbc.co.uk/radio/aod/availability/1xtra.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="6 Music" URL="http://www.bbc.co.uk/radio/aod/availability/6music.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="BBC 7" URL="http://www.bbc.co.uk/radio/aod/availability/bbc7.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Asian Network" URL="http://www.bbc.co.uk/radio/aod/availability/asiannetwork.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="BBC Radio nan Gaidheal" URL="http://www.bbc.co.uk/radio/aod/availability/alba.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Radio Scotland" URL="http://www.bbc.co.uk/radio/aod/availability/radioscotland.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Radio Ulster" URL="http://www.bbc.co.uk/radio/aod/availability/radioulster.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Radio Foyle" URL="http://www.bbc.co.uk/radio/aod/availability/radiofoyle.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Radio Wales" URL="http://www.bbc.co.uk/radio/aod/availability/radiowales.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+		<outline text="Radio Cymru" URL="http://www.bbc.co.uk/radio/aod/availability/radiocymru.xml"
+				 parser="Plugins::Alien::Parsers::BBCAodXMLParser?byday&amp;bykey&amp;reversedays&amp;reverse" />
+	</outline>
+  </body>
+</opml>

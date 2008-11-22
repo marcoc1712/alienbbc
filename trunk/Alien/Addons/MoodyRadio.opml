@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head title=" Moody Radio">
+    <expansionState></expansionState>
+  </head>
+  <body>
+      <outline text="MBN Live"  URL="http://www.barnabasroad.com/MBN2.asx" type="audio"/>
+      <outline URL="http://www.mbn.org/GenMoody/default.asp?SectionID=AD53896CDCF642AFA602040A5B93538C" text="Prime Time America"  parser="Plugins::Alien::Addons::MBNParser"/>
+      <outline URL="http://www.mbn.org/GenMoody/default.asp?SectionID=78B10093A89A478AA0CFF8B71A41D7D8" text="Open Line"             parser="Plugins::Alien::Addons::MBNParser"/>
+      <outline URL="http://www.mbn.org/GenMoody/default.asp?SectionID=77F4FF2D6CA5421298F8A4F589B0E8F0" text="Sound of Majesty"   parser="Plugins::Alien::Addons::MBNParser"/>
+      <outline URL="http://www.mbn.org/GenMoody/default.asp?SectionID=BF789E22FCAE4F7EBEFACD2AC725BDA2" text="Midday Connection"    parser="Plugins::Alien::Addons::MBNParser"/>
+      <outline URL="http://www.mbn.org/GenMoody/default.asp?SectionID=A5F1952232064B1C9238A97BF64C85A4" text="Living a Legacy"    parser="Plugins::Alien::Addons::MBNParser"/>
+  </body>
+</opml>

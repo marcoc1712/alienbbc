@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head title="DR Denmark Radio">
+    <expansionState></expansionState>
+  </head>
+  <body>
+    <outline URL="http://www.dr.dk/netradio/afspillere.asp" parser="Plugins::Alien::Addons::DRParser" text="Denmark Radio" />
+  </body>
+</opml>

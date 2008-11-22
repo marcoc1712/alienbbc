@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head title=" NPR Prarie Home Companion">
+    <expansionState></expansionState>
+  </head>
+  <body>
+      <outline URL="http://prairiehome.publicradio.org/programs/archive.php" parser="Plugins::Alien::Addons::NPRPrarieParser" text="A Prairie Home Companion" type="playlist" />
+  </body>
+</opml>
