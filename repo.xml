@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<extensions>
+
+  <plugins>
+
+	<plugin name="Alien" version="2.4a1-7.3" target="win" minTarget="7.3" maxTarget="7.3">
+	  <title lang="EN">Alien BBC</title>
+	  <desc  lang="EN">The AlienBBC plugin is designed to allow you to listen to BBC Radio streams on your SqueezeBox.  It also adds the ability to listen to many other radio streams.</desc>
+	  <link>www.x2systems.com/alienbbc</link>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-windows-v2.4a1-7.3.zip</url>
+	  <sha>ce3dc1e094a321aa07e9674302f1ec512aabf966</sha>
+	</plugin>
+
+	<plugin name="Alien" version="2.4a1-7.3" target="mac|unix" minTarget="7.3" maxTarget="7.3">
+	  <title lang="EN">Alien BBC</title>
+	  <desc  lang="EN">The AlienBBC plugin is designed to allow you to listen to BBC Radio streams on your SqueezeBox.  It also adds the ability to listen to many other radio streams.</desc>
+	  <link>www.x2systems.com/alienbbc</link>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-linux-v2.4a1-7.3.zip</url>
+	  <sha>63376c0ef92f81f1def2ebd87db68b2dfe660da5</sha>
+	</plugin>
+
+  </plugins>
+
+</extensions>
