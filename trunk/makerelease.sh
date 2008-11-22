@@ -19,11 +19,11 @@ rm /tmp/alienbbc_release/Alien/RTSPScanHeaders.pm.7_3
 rm /tmp/alienbbc_release/Alien/install.xml.7_3
 rm /tmp/alienbbc_release/Alien/custom-convert.conf.7_3
 
-pushd /tmp/alienbbc_release
+pushd /tmp/alienbbc_release > /dev/null
 find /tmp/alienbbc_release -name .svn | xargs rm -Rf
 chmod -R a+r *
 tar cfz /tmp/alienbbc-linux-v"$VERSION71".tar.gz --numeric-owner --owner=0 --group=0 *
-popd
+popd > /dev/null
 echo "Release available at: /tmp/alienbbc-linux-v"$VERSION71".tar.gz"
 
 # 7.3 specifics
@@ -32,12 +32,13 @@ cp --preserve=timestamps Alien/RTSPScanHeaders.pm.7_3 /tmp/alienbbc_release/Alie
 cp --preserve=timestamps Alien/install.xml.7_3 /tmp/alienbbc_release/Alien/install.xml
 cp --preserve=timestamps Alien/custom-convert.conf.7_3 /tmp/alienbbc_release/Alien/custom-convert.conf
 
-pushd /tmp/alienbbc_release
+pushd /tmp/alienbbc_release > /dev/null
 chmod -R a+r *
 tar cfz /tmp/alienbbc-linux-v"$VERSION73".tar.gz --numeric-owner --owner=0 --group=0 *
-popd
+zip -rq /tmp/alienbbc-linux-v"$VERSION73".zip *
+popd > /dev/null
 echo "Release available at: /tmp/alienbbc-linux-v"$VERSION73".tar.gz"
-
+echo "Release available at: /tmp/alienbbc-linux-v"$VERSION73".zip"
 
 # remove linux specifics and copy windows versions
 rm -f /tmp/alienbbc_release/*.conf
@@ -50,10 +51,10 @@ cp --preserve=timestamps Alien/install.xml /tmp/alienbbc_release/Alien/install.x
 cp --preserve=timestamps Alien/custom-convert.conf.windows /tmp/alienbbc_release/Alien/custom-convert.conf
 cp --preserve=timestamps Alien/custom-convert.conf.windows.alt /tmp/alienbbc_release/Alien/custom-convert.conf.alt
 
-pushd /tmp/alienbbc_release
+pushd /tmp/alienbbc_release > /dev/null
 chmod -R a+r *
 zip -rq /tmp/alienbbc-windows-v"$VERSION71".zip *
-popd
+popd > /dev/null
 echo "Release available at: /tmp/alienbbc-windows-v"$VERSION71".zip"
 
 # 7.3 specifics
@@ -62,10 +63,10 @@ cp --preserve=timestamps Alien/RTSPScanHeaders.pm.7_3 /tmp/alienbbc_release/Alie
 cp --preserve=timestamps Alien/install.xml.7_3 /tmp/alienbbc_release/Alien/install.xml
 cp --preserve=timestamps Alien/custom-convert.conf.windows.7_3 /tmp/alienbbc_release/Alien/custom-convert.conf
 
-pushd /tmp/alienbbc_release
+pushd /tmp/alienbbc_release > /dev/null
 chmod -R a+r *
 zip -rq /tmp/alienbbc-windows-v"$VERSION73".zip *
-popd
+popd > /dev/null
 echo "Release available at: /tmp/alienbbc-windows-v"$VERSION73".zip"
 
 rm -Rf /tmp/alienbbc_release
