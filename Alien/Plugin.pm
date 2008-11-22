@@ -71,6 +71,8 @@ use Plugins::Alien::Settings;
 
 my $menuUrl; # store the menu url here
 
+my @mplayer;
+
 # Main plugin is a subclass of OPMLBased - not much to do here:
 
 sub initPlugin {
@@ -87,8 +89,18 @@ sub initPlugin {
 	);
 
 	if (&Slim::Utils::OSDetect::isWindows && Slim::Utils::OSDetect::isWindows()) {
+
 		require Plugins::Alien::WindowsDownloader;
+
 		Plugins::Alien::WindowsDownloader->checkMplayer($class);
+
+	} elsif (Slim::Utils::Misc::findbin('mplayer') || Slim::Utils::Misc::findbin('mplayer.exe')) {
+
+		$class->mplayer('found');
+
+	} else {
+
+		$class->mplayer('notfound');
 	}
 
 	Plugins::Alien::Settings->importNewMenuFiles;
@@ -130,6 +142,17 @@ sub menuUrl {
 	}
 
 	return $menuUrl;
+}
+
+sub mplayer {
+	my $class = shift;
+
+	if (@_) {
+		@_ == 2 ? $log->warn("$_[0] - $_[1]") : $log->info(@_);
+		@mplayer = @_;
+	}
+
+	return wantarray ? @mplayer : $mplayer[0];
 }
 
 sub pluginDir {
