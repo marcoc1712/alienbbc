@@ -34,6 +34,7 @@ cp --preserve=timestamps Alien/custom-convert.conf.7_3 /tmp/alienbbc_release/Ali
 
 pushd /tmp/alienbbc_release > /dev/null
 chmod -R a+r *
+chmod +x Alien/Bin/mplayer.sh
 tar cfz /tmp/alienbbc-linux-v"$VERSION73".tar.gz --numeric-owner --owner=0 --group=0 *
 zip -rq /tmp/alienbbc-linux-v"$VERSION73".zip *
 popd > /dev/null
