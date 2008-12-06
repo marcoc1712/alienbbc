@@ -41,6 +41,9 @@
 #   2.3b1   - Update to support 7.3 transcoding changes
 #   2.4a1   - Create 7.3 extension downloader package
 #           - Add mplayer downloader for windows (so we can use the extension downloader)
+#   2.4a2   - Add ability to disable bandwidth parameter from settings page
+#           - Add windows mplayer test from settings page
+#           - Revert unix version to -cache size of 128 for streaming to players as flac
 
 package Plugins::Alien::Plugin;
 
