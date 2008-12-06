@@ -2,6 +2,10 @@
 
 <extensions>
 
+  <details>
+	<title lang="EN">Alien BBC</title>
+  </details>
+
   <plugins>
 
 	<plugin name="Alien" version="2.4a1-7.3" target="win" minTarget="7.3" maxTarget="7.3">
