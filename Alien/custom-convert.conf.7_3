@@ -8,7 +8,7 @@ rtsp mp3 * *
 	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0 -ao pcm:file=/dev/fd/3 $FILE$ | [lame] --silent -q $QUALITY$ $BITRATE$ - -
 rtsp flc * *
 	# R
-	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 300 -af volume=0 -ao pcm:file=/dev/fd/3 $FILE$ | [flac] -cs --totally-silent --compression-level-0 -
+	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0 -ao pcm:file=/dev/fd/3 $FILE$ | [flac] -cs --totally-silent --compression-level-0 -
 
 # 
 # WMA for mplayer pre7 or later
