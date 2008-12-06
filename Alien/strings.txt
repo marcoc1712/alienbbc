@@ -75,7 +75,7 @@ PLUGIN_ALIENBBC_MPLAYER
 	EN	Mplayer
 
 PLUGIN_ALIENBBC_MPLAYER_DESC
-	EN	AlienBBC requires mplayer to play real audio streams.  For windows platforms it will attempt to install mplayer for you by downloading from www.mplayerhq.hu.  For other platforms please ensure mplayer is installed.
+	EN	AlienBBC requires mplayer to play real audio streams.<br />For windows platforms AlienBBC will attempt to install mplayer for you by downloading from www.mplayerhq.hu.<br />For Mac please download and install the mplayer diskimage from www.mplayerhq.hu.<br />For linux please install mplayer from your distribution, e.g. for Ubuntu: 'sudo apt-get install mplayer-nogui'.
 
 PLUGIN_ALIENBBC_MPLAYER_FOUND
 	EN	Installed
@@ -92,3 +92,19 @@ PLUGIN_ALIENBBC_MPLAYER_DOWNLOAD_FAILED
 PLUGIN_ALIENBBC_MPLAYER_DOWNLOAD_OK
 	EN	Downloaded Successfully
 
+PLUGIN_ALIENBBC_TESTMPLAYER
+	EN	Test
+
+PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH
+	EN	Fast Start
+
+PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH_DESC
+	EN	The mplayer -bandwidth option is normally used to enable streams to start playing as rapidly as posible.  This works for most cases but has been known to prevent streams playing on some machines.  Set to disabled if you have problems playing real streams on your computer.
+
+PLUGIN_ALIENBBC_MPLAYER_BANWIDTH_0
+	EN	Enabled (default)
+
+PLUGIN_ALIENBBC_MPLAYER_BANWIDTH_1
+	EN	Disabled
+
+	
