@@ -26,6 +26,8 @@ $prefs->migrate(1, sub {
 	1;
 });
 
+$prefs->init({ disablebandwith => 0 });
+
 my $plugin; # the main plugin class
 
 sub name {
@@ -52,6 +54,8 @@ sub handler {
 		my @ignore = grep { $_ ne '' } (ref $params->{'ignore'} eq 'ARRAY' ? @{$params->{'ignore'}} : $params->{'ignore'});
 
 		$prefs->set('ignore', \@ignore);
+
+		$prefs->set('disablebandwidth', $params->{'disablebandwidth'});
 	}
 
 	if ($params->{'reset'}) {
@@ -60,12 +64,27 @@ sub handler {
 		$class->importNewMenuFiles('clear');
 	}
 
+	if ($^O =~ /Win32/ && $params->{'testmplayer'}) {
+
+		$class->_testMplayerWindows;
+	}
+
 	my @ignore = ( @{$prefs->get('ignore')}, '' );
 	my @mplayer = $plugin->mplayer;
 
 	$params->{'ignorelist'} = \@ignore;
 	$params->{'opmlfile'} = $plugin->menuUrl;
 	$params->{'mplayer'} = \@mplayer;
+
+	if (Slim::Utils::Versions->compareVersions($::VERSION, '7.3') >= 0) {
+		$params->{'showbandwidth'} = 1;
+		$params->{'disabledbandwidth'} = $prefs->get('disabledbandwidth');
+	}
+
+	if ($^O =~ /Win32/ && $plugin->mplayer =~ /found|download_ok/) {
+
+		$params->{'enabletest'} = 1;
+	}
 
 	return $class->SUPER::handler($client, $params);
 }
@@ -175,5 +194,27 @@ sub _import {
 	$menuOpml->save;
 }
 
+# create a new cmd window on windows and run mplayer with a known real stream to verify mplayer is working
+sub _testMplayerWindows {
+
+	return unless $^O =~ /Win32/;
+
+	my $testUrl = 'http://www.bbc.co.uk/radio2/realmedia/fmg2.ram';
+
+	Slim::bootstrap::tryModuleLoad('Win32::Process');
+
+	my $processObj;
+	
+	if (!$@) {
+		Win32::Process::Create(
+			$processObj,
+			Slim::Utils::Misc::findbin("mplayer"),
+			'"' . Slim::Utils::Misc::findbin('mplayer') .  '" ' . " -cache 128 -playlist $testUrl",
+			0,
+			Win32::Process::NORMAL_PRIORITY_CLASS() | Win32::Process::CREATE_NEW_CONSOLE(),
+			"."
+		);
+	}
+}
 
 1;

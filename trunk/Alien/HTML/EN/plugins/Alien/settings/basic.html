@@ -9,7 +9,18 @@
 	[% END %]
 
 	[% WRAPPER setting title="PLUGIN_ALIENBBC_MPLAYER" desc="PLUGIN_ALIENBBC_MPLAYER_DESC" %]
-		<div>[% "PLUGIN_ALIENBBC_MPLAYER_" _ mplayer.0 | string %] [% IF mplayer.1 %]([% mplayer.1 %])[% END %]</div>
+		<div>[% "PLUGIN_ALIENBBC_MPLAYER_" _ mplayer.0 | string %] [% IF mplayer.1 %]([% mplayer.1 %])[% END %]
+		[% IF enabletest %]  -  <a href="[% webroot %]plugins/Alien/settings/basic.html?testmplayer=1">[% "PLUGIN_ALIENBBC_TESTMPLAYER" | string %]</a>[% END %]
+		</div>
+	[% END %]
+
+	[% IF showbandwidth %]
+		[% WRAPPER setting title="PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH" desc="PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH_DESC" %]
+			<select class="stdedit" name="disablebandwidth" id="disablebandwidth">
+			  <option [% IF NOT disablebandwidth %]selected [% END %]value="0">[% "PLUGIN_ALIENBBC_MPLAYER_BANWIDTH_0" | string %]</option>
+			  <option [% IF     disablebandwidth %]selected [% END %]value="1">[% "PLUGIN_ALIENBBC_MPLAYER_BANWIDTH_1" | string %]</option>
+			</select>
+		[% END %]
 	[% END %]
 
 	[% WRAPPER setting title="PLUGIN_ALIENBBC_MENU" desc="PLUGIN_ALIENBBC_MENU_DESC" %]

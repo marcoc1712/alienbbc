@@ -22,6 +22,8 @@ use Plugins::Alien::RTSPScanHeaders;
 
 my $log = logger('plugin.alienbbc');
 
+my $prefs = preferences('plugin.alienbbc');
+
 Slim::Player::ProtocolHandlers->registerHandler('rtsp', __PACKAGE__);
 
 Slim::Formats::Playlists->registerParser('rtsppl', 'Plugins::Alien::Playlists::RTSPPL');
@@ -91,6 +93,14 @@ sub new {
 	$log->debug("Modified url to play $url");
 
 	my $quality = preferences('server')->client($client)->get('lameQuality');
+
+	# remove bandwidth param to cope with hosts which fail with the mplayer -bandwidth parameter
+	if ($prefs->get('disablebandwidth')) {
+
+		$log->debug("removing mplayer bandwidth parameter");
+
+		$transcoder->{'command'} =~ s/\-bandwidth\s\d+\s//;
+	}
 
 	my $command = Slim::Player::TranscodingHelper::tokenizeConvertCommand2(
 		$transcoder, $url, $url, 1, $quality
