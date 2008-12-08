@@ -91,7 +91,7 @@ sub initPlugin {
 		menu => 'radios'
 	);
 
-	if (&Slim::Utils::OSDetect::isWindows && Slim::Utils::OSDetect::isWindows()) {
+	if (exists &Slim::Utils::OSDetect::isWindows && Slim::Utils::OSDetect::isWindows()) {
 
 		require Plugins::Alien::WindowsDownloader;
 
