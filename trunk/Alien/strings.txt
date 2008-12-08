@@ -101,10 +101,10 @@ PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH
 PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH_DESC
 	EN	The mplayer -bandwidth option is normally used to enable streams to start playing as rapidly as posible.  This works for most cases but has been known to prevent streams playing on some machines.  Set to disabled if you have problems playing real streams on your computer.
 
-PLUGIN_ALIENBBC_MPLAYER_BANWIDTH_0
+PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH_0
 	EN	Enabled (default)
 
-PLUGIN_ALIENBBC_MPLAYER_BANWIDTH_1
+PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH_1
 	EN	Disabled
 
 	
