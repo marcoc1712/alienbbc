@@ -8,22 +8,22 @@
 
   <plugins>
 
-	<plugin name="Alien" version="2.4a1-7.3" target="win" minTarget="7.3" maxTarget="7.3">
+	<plugin name="Alien" version="2.4a2-7.3" target="win" minTarget="7.3" maxTarget="7.*">
 	  <title lang="EN">Alien BBC</title>
-	  <desc  lang="EN">The AlienBBC plugin is designed to allow you to listen to BBC Radio streams on your SqueezeBox.  It also adds the ability to listen to many other radio streams.</desc>
+	  <desc  lang="EN">AlienBBC allows you to listen to BBC Radio streams via Squeezecenter.  It also adds the ability to listen to many other radio streams using Real Audio via Squeezecenter.<br />Alien required the use of mplayer to decode real audio streams.  For windows machines this will be automatically downloaded, for mac and windows machines please install mplayer separately.</desc>
 	  <link>http://www.x2systems.com/alienbbc</link>
 	  <creator>AlienBBC Team</creator>
-	  <url>http://alienbbc.googlecode.com/files/alienbbc-windows-v2.4a1-7.3.zip</url>
-	  <sha>ce3dc1e094a321aa07e9674302f1ec512aabf966</sha>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-windows-v2.4a2-7.3.zip</url>
+	  <sha>ed6bcc0a7186c0aa140e738209fefbb0673e1241</sha>
 	</plugin>
 
-	<plugin name="Alien" version="2.4a1-7.3" target="mac|unix" minTarget="7.3" maxTarget="7.3">
+	<plugin name="Alien" version="2.4a2-7.3" target="mac|unix" minTarget="7.3" maxTarget="7.*">
 	  <title lang="EN">Alien BBC</title>
-	  <desc  lang="EN">The AlienBBC plugin is designed to allow you to listen to BBC Radio streams on your SqueezeBox.  It also adds the ability to listen to many other radio streams.</desc>
+	  <desc  lang="EN">AlienBBC allows you to listen to BBC Radio streams via Squeezecenter.  It also adds the ability to listen to many other radio streams using Real Audio via Squeezecenter.<br />Alien required the use of mplayer to decode real audio streams.  For windows machines this will be automatically downloaded, for mac and windows machines please install mplayer separately.</desc>
 	  <link>http://www.x2systems.com/alienbbc</link>
 	  <creator>AlienBBC Team</creator>
-	  <url>http://alienbbc.googlecode.com/files/alienbbc-linux-v2.4a1-7.3.zip</url>
-	  <sha>de2affd4b8e7363fe957a7b229af95f92852f142</sha>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-linux-v2.4a2-7.3.zip</url>
+	  <sha>74b186c5b17cf69a8866d594b6fe0167e7d06595</sha>
 	</plugin>
 
   </plugins>
