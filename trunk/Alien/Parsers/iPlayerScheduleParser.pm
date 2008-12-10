@@ -5,17 +5,16 @@
 #
 # This program is free software; you can redistribute it and/or 
 # modify it under the terms of the GNU General Public License, version 2.
+# 
+# PiPlayer parser - parses the main top level Radio pages which have a table of programs/episodes.
 #
-# iPlayer Search options -  issues Search and then parses results.
-#
-package Plugins::Alien::Parsers::iPlayerSearchParser;
+package Plugins::Alien::Parsers::iPlayerScheduleParser;
 
 use strict;
 
 use Slim::Utils::Log;
 
 use HTML::PullParser;
-use Plugins::Alien::Parsers::iPlayerParser;
 
 my $log = logger('plugin.alienbbc');
 
@@ -51,6 +50,7 @@ sub getnext2tag
   }
 }
 
+
 sub parse
 {
     my $class  = shift;
@@ -60,12 +60,14 @@ sub parse
     my $url    = $params->{'url'};
     my $client = $params->{client};
 
+    my $topmenu = defined( $params->{'item'}->{'topmenu'}); 
+
     my @menus;
     my $submenu;
     my $savedstreams;
     my %stations;
     my $menuname;
-    my $tabletype;
+    my $topmenus;
 
     my $progclass;
     my $progid;
@@ -75,68 +77,33 @@ sub parse
     my $setitle;
     my $progurl;
     my $progdesc;
-    my $progimgsrc;
-    my $progimgalt;
-    my $progimghref;
+
+    my $progstarttime;
     my $t;
     my $currentpage;
     my $totalpages;
     my $pageofpages;
-    my $searchresults =0;
     my %pageurls;
-    
+    my $progentry;
+
     my $p = HTML::PullParser->new(api_version => 3, doc => ${$http->contentRef},
                                   start => 'event, tag, attr,  skipped_text',
                                   end   => 'event, tag, dtext, skipped_text',
                                   report_tags => [qw ( td tr table tbody a img span h3 div p ul li ol )]);
 
-
-
-     $log->debug("Search iPlayer for url \'$url\'"); 
-
-	while (defined($t =  getnexttag($p,"div"))) {
-		next if (!defined ($t->[2]->{id}));
-		if ($t->[2]->{id} eq "search-results-container") {
-			$searchresults = 1;
-			next;
-		}
-		last if  ($t->[2]->{id} eq "listview") ;
-	}
-#
-# if no "search-results-container" then search is a categrory results and in a different page format
-#
-	if (($t->[2]->{id} eq "listview") && ($searchresults == 0) ) {
-		return Plugins::Alien::Parsers::iPlayerParser::parse($class,$http);
+	while (defined($t =  getnexttag($p,'div'))) {
+		next if (!defined ($t->[2]->{class}));
+		last if  ($t->[2]->{class} eq "result-wrapper") ;
 	}
 
-
-	if (defined ($t->[2]->{class}) && ($t->[2]->{class} eq 'showHide')) {
-		$t = getnexttag($p,"/span");
-		$pageofpages = $t->[3];
-		$log->debug("Pages of menu ".$t->[3] ); 
-		if ( $pageofpages =~ m/\(page (\d+) of (\d+)\)/  ) {
-			$currentpage = int($1);
-			$totalpages  = int($2);
-		}
-		else {
-			$log->error("Couldn't parse the pagination header \'$pageofpages\'");
-#			return undef;
-		}
-	}
-	else {
-		$currentpage = 1;
-		$totalpages = 1;
-	}
-	
-#
-# Page selection list for search results is thgeonly way to find out how many pages in search results 
-#
 	$t =  getnext2tag($p,'ol','table');
 	if ($t->[1] eq 'ol') {
+		return undef unless defined($t);
 		my $searchcurrentpage = undef;
 		my $searchtotalpages  = undef;	
 		while (defined($t =  getnext2tag($p,"li","table"))) {
 			last if ($t->[1] eq "table");
+
 			if (( defined($t->[2]->{class}) ) && ($t->[2]->{class} eq "current-page" )  ) {
 				$t = getnexttag($p,"/li");
 				$searchcurrentpage = int($t->[3] );
@@ -144,6 +111,7 @@ sub parse
 				next;
 			}
 			$t =  getnexttag($p,"a");
+
 			my $page = $t->[2]->{class};
 			my $href = $t->[2]->{href};
 			$t =  getnexttag($p,"/a");
@@ -158,39 +126,30 @@ sub parse
 		}
 		$totalpages = (defined($searchtotalpages)) ? $searchtotalpages : $searchcurrentpage;
 		$currentpage = $searchcurrentpage;
+		$log->debug ("Processed page nos $totalpages $currentpage");
+
 	}
-
-
-	if (!defined($t)) {
-
-		$log->debug("No table found - no matches in a search");
-
-		push @$savedstreams, {
-			'name'		=> "No matches found",
-			'description'	=> "No matches found",
-		};
-		
-		return {
-			'type'  => 'opml',
-			'title' => $params->{'feedTitle'},
-			'items' => \@$savedstreams,
-		};
+	else {
+		$totalpages = 1;
+		$currentpage = 1;
+		$log->debug ("No page listing");
 	}
-
-	$menuname  = $t->[2]->{summary};
-	$tabletype = $t->[2]->{class};
-	$log->info ("Got table summary \'$menuname\'  table class=\'$tabletype\'");
 
 	if ($currentpage == 1) {
-		$savedstreams = undef;
-		$params->{'alieniplayerrooturl'} = "$url" . ($searchresults ? '&' : '?');	
+		if ($topmenu) {
+			$savedstreams = $topmenus;
+		}
+		else {
+			$savedstreams = undef;
+		}
+		$params->{'alieniplayerrooturl'} = $url;
 	} 	
 	else {
-		$savedstreams = $params->{'aliensavedstreams'} ; 
+		$savedstreams = $params->{'aliensavedstreams'};
 	}
 
-	$log->debug("Processing currentpage=$currentpage totalpages=$totalpages");
-
+	$menuname = $t->[2]->{summary};
+	$log->info ("Got table for $menuname");
 
 #  Skip table definition
 	$t = getnexttag($p,"tbody");
@@ -198,20 +157,16 @@ sub parse
 # Now real work - Each row has a program.
 #
 	while (defined($t =  getnext2tag($p,"tr","/tbody"))) {
+
 		my $playaudio = 0;
 		last if ($t->[1] eq "/tbody");
 #	New program row
-		$progclass = undef;
-		if (defined( $t->[2]->{class})) {
-			$progid    = $t->[2]->{id};
+		$progclass = $t->[2]->{class};
+		$progid    = $t->[2]->{id};
 
 # Progclass is made up of a number of words which are in the display of the episode line  "episode" "most-recent" "last" "other" "unav" and "odd" 
 # remove odd from class as it governs background shading.
-			$progclass = $t->[2]->{class};
-			$progclass =~ s/ odd//;
-			$progclass =~ s/ stack//;
-
-		} ;
+		$progclass =~ s/ odd//;
 
 # Loop around - columns of the table unil end of row "/tr" 
 		while(defined($t = getnext2tag($p,"td","/tr"))) {
@@ -232,21 +187,17 @@ sub parse
 
 				last if (!defined ($t = getnexttag($p,"h3")));
 				last if  ($t->[2]->{class} ne "summary") ;
-				$progtitle=$t->[2]->{title};
+				$progtitle= Encode::decode_utf8($t->[2]->{title});
 
 				last if (!defined ($t = getnexttag($p,"a")));
 				last if  ($t->[2]->{class} ne "uid url") ;
 				$progurl=$t->[2]->{href};
 			} 
 			elsif ( $t->[2]->{class} eq "first" ) {
-#				1st Column Program image
-				last if (!defined ($t = getnexttag($p,"a")));
-				if ($t->[2]->{class} eq "image") {
-					$progimghref= $t->[2]->{href};
-				};
-				last if (!defined ($t = getnexttag($p,"img")));
-				$progimgsrc= $t->[2]->{src};
-				$progimgalt= $t->[2]->{alt};
+#				1st Column Program start time
+				last if (!defined ($t = getnexttag($p,"p")));
+				last if (!defined ($t = getnexttag($p,"/p")));
+				$progstarttime = $t->[3];
 			}
 			elsif ( $t->[2]->{class} eq "last" ) {
 #				3rd Column Program description !
@@ -261,7 +212,7 @@ sub parse
 				last if  ($t->[2]->{class} ne "description") ;
 
 				last if (!defined ($t = getnexttag($p,"/p")));
-				$progdesc = $t->[3];
+				$progdesc = Encode::decode_utf8($t->[3]);
 			} else {
 				print "Unknown class " . $t->[2]->{class} ;
 			}
@@ -269,28 +220,33 @@ sub parse
 		}
 		$log->debug("Progclass=\'$progclass\' progtitle=\'$progtitle\' playaudio=$playaudio");
 		next unless ($playaudio);
-		next unless (defined($progclass));
 		if ( $progclass =~ m/unav/) {
+			$progclass =~ s/ unav//;
 			$log->info(" Episode unavailable $progtitle");
-		}
-		elsif (($progclass eq 'episode single-ep') || ($progclass =~ m/most-recent/) ) {
-			push @$savedstreams, {
-				'name'   => $progtitle,
+			$progentry = {
+				'name'   => $progstarttime . ' ' . $progtitle,
+				'description' => $progdesc,
+				};
+
+		} 
+		else {
+			$progentry = {
+				'name'   => $progstarttime . ' ' . $progtitle,
 				'url'    => 'http://www.bbc.co.uk' . $progurl,
 				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
 				'type'   => 'playlist',
 				'description' => $progdesc,
 				};
+
+		}
+
+
+		if (($progclass eq 'episode single-ep') || ($progclass =~ m/most-recent/) ) {
+			push @$savedstreams, $progentry;
 		}
 		elsif ($progclass eq 'episode last other-eps') {
-			push @$submenu, {
-				'name'   => $progtitle,
-				'url'    => 'http://www.bbc.co.uk' . $progurl,
-				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
-				'type'   => 'playlist',
-				'description' => $progdesc,
+			push @$submenu, $progentry;
 
-				};
  			push @$savedstreams, {
 				'name'   => $setitle . ' - other episodes',
 				'items'  => \@$submenu,
@@ -299,42 +255,35 @@ sub parse
 			$submenu = undef;
 		}
 		else  {
-			push @$submenu, {
-				'name'   => $progtitle,
-				'url'    => 'http://www.bbc.co.uk' . $progurl,
-				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
-				'type'   => 'playlist',
-				'description' => $progdesc,
-				};
+			push @$submenu, $progentry;
 		}
 	}
-		
-	$log->info("found ". (defined($savedstreams) ?  (scalar @$savedstreams) : 0 ) . " streams on page $currentpage/$totalpages of $url");
+
+	$log->info(sprintf "found %d streams on page %d/%d of url %s", ((defined($savedstreams )) ? scalar @$savedstreams : 0 ),$currentpage,$totalpages,$url);
 
 	if (($totalpages > 1) && ($currentpage != $totalpages)) {
-		$params->{'aliensavedstreams'}  = $savedstreams;
+		$params->{'aliensavedstreams'} = $savedstreams ;
 	
 		my $newurl =  'http://www.bbc.co.uk' . $pageurls{($currentpage+1)} ;
+#		my $newurl = $params->{'alieniplayerrooturl'} . '?page=' . ($currentpage+1);
 		$log->info("parser redirecting to $newurl");
 		return {
 			'type' => 'redirect',
 			'url'  => $newurl
 		};
+		
 	}
 
-	$params->{'aliensavedstreams'} = undef;
+	$params->{'aliensavedstreams'} = undef ;
 	$params->{'alieniplayerrooturl'} = undef;
-
-
-	# return xmlbrowser hash
 
 	if ( !defined($savedstreams))  {
 
-		$log->debug("No streams found - no matches in a search");
+		$log->debug("No streams found ");
 
 		push @$savedstreams, {
-			'name'		=> "No matches found",
-			'description'	=> "No matches found",
+			'name'		=> "No programs found",
+			'description'	=> "No programs found",
 		};
 		
 		return {
@@ -344,6 +293,8 @@ sub parse
 		};
 	}
 
+
+	# return xmlbrowser hash
 	return {
 		'type'  => 'opml',
 #		'title' => $params->{'feedTitle'},

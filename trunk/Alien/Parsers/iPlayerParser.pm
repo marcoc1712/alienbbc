@@ -45,12 +45,35 @@ sub getnext2tag
      return undef unless (defined($t));
      return $t if ( $t->[1] eq $endsearchtag) ;
      return $t if ( $t->[1] eq $searchtag) ;
-
-#     print "discard nexttag ". $t->[1]."\n";
   }
 }
 
+sub cleanup
+{
+    my $str = shift;
+    return undef unless defined ($str); 
 
+    $str =~ s/\n/ /g;  # change LF to space
+    $str =~ s/\r//g;   # Get rid of CR if any.
+
+    $str =~ s/<br>//gi; # Get rid of HTML <br> if any.
+    $str =~ s/<br \/>//gi; # Get rid of HTML <br> if any.
+
+        $str =~ s/&nbsp;/ /g; # replace HTML &nbsp if any.
+
+    $str =~ s/<h3>//gi; # Get rid of HTML <h3> if any.
+    $str =~ s/<\/h3>//gi; # Get rid of HTML </h3> if any.
+
+    $str =~ s/<span>//gi; # Get rid of HTML <h3> if any.
+    $str =~ s/<\/span>//gi; # Get rid of HTML </h3> if any.
+
+    # strip whitespace from beginning and end
+
+    $str =~ s/^\s*//; 
+    $str =~ s/\s*$//; 
+
+    return $str;
+}
 sub parse
 {
     my $class  = shift;
@@ -70,26 +93,30 @@ sub parse
     my $topmenus;
 
     my $progclass;
-    my $progid;
-    my $progsummaryahref;
-    my $progsummarydesc;
-    my $progtitle;
-    my $setitle;
+    my $progsetitle;
+    my $progeptitle;
     my $progurl;
     my $progdesc;
-    my $progimgsrc;
-    my $progimgalt;
-    my $progimghref;
+    my $progstack;
+
     my $t;
     my $currentpage;
     my $totalpages;
     my $pageofpages;
     my %pageurls;
 
+#
+#  If BBC have defined the iPlayer url not to be cached - this causes big delay as XML.pm will not cache XML parsed result if cachtime=0 
+#  so - iPlayer pages will be cached for 5 mins (300 secs) regardless of BBC wishes.
+
+    if (( defined ($http->cacheTime) ) && ($http->cacheTime == 0) ) {
+		$http->cacheResponse(300);
+    }
+
     my $p = HTML::PullParser->new(api_version => 3, doc => ${$http->contentRef},
                                   start => 'event, tag, attr,  skipped_text',
                                   end   => 'event, tag, dtext, skipped_text',
-                                  report_tags => [qw ( td tr table tbody a img span h3 div p ul li ol )]);
+                                  report_tags => [qw (  a img span h1 h3 div p ul li ol )]);
 
 # If a top menu as defined in opml - look for categores and Schedule.
 # <ul id="nav-categories" class="service-categories">
@@ -102,32 +129,38 @@ sub parse
 			next if (!defined ($t->[2]->{id}));
 			last if  ($t->[2]->{id} eq "nav-schedule") ;
 		}
+		$p->report_tags(qw(a ul li));
 
-
-		while(defined($t = getnext2tag($p,"a","/ul"))) {
+		while(defined($t = getnext2tag($p,"li","/ul"))) {
 			last if ($t->[1] eq "/ul");
+			$t = getnext2tag($p,"a","/li");
+			next if ($t->[1] eq "/li");
 			next if (!defined($t->[2]->{href}));
 			$itemurl = $t->[2]->{href};
 			last if (!defined ($t = getnexttag($p,"/a")));
-			$itemname = $t->[3];
+			$itemname = cleanup($t->[3]);
 			$log->info("schedule item $itemname");
-			last if ($itemname =~ m/(TOMORROW)/);
+#			last if ($itemname =~ m/(tomorrow)/i);
+			next if (! ($itemname =~ m/^(Mon |Tues |Wed |Thurs |Fri |Sat |Sun )/i));
 
 			push @$submenu, {
 				'name'   => $itemname,
 				'url'    => 'http://www.bbc.co.uk' . $itemurl,
-				'parser' => 'Plugins::Alien::Parsers::iPlayerParser',
+				'parser' => 'Plugins::Alien::Parsers::iPlayerScheduleParser',
 				};
 		}
+		$p->report_tags(qw (  a img span h1 h3 div p ul li ol ));
 
-		$log->info(sprintf "found %d schedule streams on url %s", scalar @$submenu,$url);
+		if (defined($submenu )) {
+			$log->info(sprintf "found %d schedule streams on url %s", scalar @$submenu,$url);
 
-		push @$topmenus, {
-			'name'   => 'Schedule',
-			'items'  => \@$submenu,
-			'type'   => 'opml',
-			};	
-		$submenu = undef;
+			push @$topmenus, {
+				'name'   => 'Schedule',
+				'items'  => \@$submenu,
+				'type'   => 'opml',
+				};	
+			$submenu = undef;
+		}
 
 		while (defined($t =  getnexttag($p,"ul"))) {
 			next if (!defined ($t->[2]->{id}));
@@ -149,28 +182,43 @@ sub parse
 				'parser' => 'Plugins::Alien::Parsers::iPlayerParser',
 				};
 		}
-		$log->info(sprintf "found %d categories on url %s", scalar @$submenu,$url);
 
-		push @$topmenus, {
-			'name'   => 'Categories',
-			'items'  => \@$submenu,
-			'type'   => 'opml',
-			};	
-		$submenu = undef;
+		if (defined($submenu )) {
+			$log->info(sprintf "found %d categories on url %s", scalar @$submenu,$url);
+
+			push @$topmenus, {
+				'name'   => 'Categories',
+				'items'  => \@$submenu,
+				'type'   => 'opml',
+				};	
+			$submenu = undef;
+		}
 	}
+
+	while (defined($t =  getnexttag($p,'div'))) {
+		next if (!defined ($t->[2]->{id}));
+		last if  ($t->[2]->{id} eq "results-header") ;
+	}
+		$log->info( "Found results-header ");
+
+	$t =  getnexttag($p,'h1');
+	$t =  getnexttag($p,'/h1');
+	$menuname= $t->[3];
+
 	
 	while (defined($t =  getnexttag($p,'div'))) {
 		next if (!defined ($t->[2]->{id}));
 		last if  ($t->[2]->{id} eq "listview") ;
 	}
 
-	$t =  getnext2tag($p,'ol','table');
+# <ol id="page-selection" class="page-selection">
+	$t =  getnext2tag($p,'ol','div');
 	if ($t->[1] eq 'ol') {
-		return undef unless defined($t);
+		return undef unless (defined($t) && defined($t->[2]->{id}));
 		my $searchcurrentpage = undef;
 		my $searchtotalpages  = undef;	
-		while (defined($t =  getnext2tag($p,"li","table"))) {
-			last if ($t->[1] eq "table");
+		while (defined($t =  getnext2tag($p,"li","div"))) {
+			last if ($t->[1] eq "div");
 
 			if (( defined($t->[2]->{class}) ) && ($t->[2]->{class} eq "current-page" )  ) {
 				$t = getnexttag($p,"/li");
@@ -188,7 +236,7 @@ sub parse
 			if ($page =~ m/last /) {
 				$searchtotalpages = int($t->[3])  ;
 				$log->debug("Found last page in \'$page\' currentpage=$searchcurrentpage totalpages=$searchtotalpages (". $t->[3].") ");
-				$t = getnexttag($p,"table");
+				$t = getnexttag($p,"div");
 				last;
 			}
 		}
@@ -217,92 +265,79 @@ sub parse
 		$savedstreams = $params->{'aliensavedstreams'};
 	}
 
-	$log->debug ("expect table tag =". Dumper($t));
+	if ((defined ($t->[2]->{class})) && ($t->[2]->{class} ne "result-wrapper")) {
 	
-#	$t = getnexttag($p,"table");
-	$menuname = $t->[2]->{summary};
-	$log->info ("Got table for $menuname");
+		while (defined($t =  getnexttag($p,'div'))) {
+			next if (!defined ($t->[2]->{class}));
+			last if  ($t->[2]->{class} eq "result-wrapper") ;
+		}
+	}
+	
+#	Sholuld be a div with the result class wrapper;
+	$t =  getnexttag($p,'ul');
 
-#  Skip table definition
-	$t = getnexttag($p,"tbody");
-	$log->debug ("expect tbody tag =". Dumper($t));
 #
 # Now real work - Each row has a program.
 #
-	while (defined($t =  getnext2tag($p,"tr","/tbody"))) {
-
+	while (defined($t =  getnext2tag($p,"li","/ul"))) {
+		my $h3title;
 		my $playaudio = 0;
-		last if ($t->[1] eq "/tbody");
-#	New program row
-		$progclass = $t->[2]->{class};
-		$progid    = $t->[2]->{id};
+		last if ($t->[1] eq "/ul");
 
-# Progclass is made up of a number of words which are in the display of the episode line  "episode" "most-recent" "last" "other" "unav" and "odd" 
+		$progclass = $t->[2]->{class};
+		$progstack     = ($t->[2]->{class} =~ m/ stack/) ;
+
+# Progclass is made up of a number of words which are in the display of the episode line  "episode" "stack" "most-recent" "last" "other" "unav" and "odd" 
 # remove odd from class as it governs background shading.
 		$progclass =~ s/ odd//;
+		$progclass =~ s/ stack//;
 
-# Loop around - columns of the table unil end of row "/tr" 
-		while(defined($t = getnext2tag($p,"td","/tr"))) {
-			last if ($t->[1] eq "/tr");
-
-			if (!defined($t->[2]->{class})) {
-#				2nd Column - program Title	
-				last if (!defined ($t = getnexttag($p,"div")));
-				last if  ($t->[2]->{class} ne "summary-and-time") ;
-
-				last if (!defined ($t = getnexttag($p,"a")));
-				last if  ($t->[2]->{class} ne "play-audio") ;
-				$playaudio = 1;
-
-				$progsummaryahref= $t->[2]->{href};
-				last if (!defined ($t = getnexttag($p,"/span")));
-				$progsummarydesc = $t->[3];
-
-				last if (!defined ($t = getnexttag($p,"h3")));
-				last if  ($t->[2]->{class} ne "summary") ;
-				$progtitle=$t->[2]->{title};
-
-				last if (!defined ($t = getnexttag($p,"a")));
-				last if  ($t->[2]->{class} ne "uid url") ;
-				$progurl=$t->[2]->{href};
-			} 
-			elsif ( $t->[2]->{class} eq "first" ) {
-#				1st Column Program image
-				last if (!defined ($t = getnexttag($p,"a")));
-				if ($t->[2]->{class} eq "image") {
-					$progimghref= $t->[2]->{href};
-				};
-				last if (!defined ($t = getnexttag($p,"img")));
-				$progimgsrc= $t->[2]->{src};
-				$progimgalt= $t->[2]->{alt};
-			}
-			elsif ( $t->[2]->{class} eq "last" ) {
-#				3rd Column Program description !
-				last if (!defined ($t = getnexttag($p,"div")));
-				last if  ($t->[2]->{class} ne "details") ;
-
-				last if (!defined ($t = getnexttag($p,"span")));
-				last if (!defined ($t = getnexttag($p,"span")));
-				$setitle = $t->[3];
-
-				last if (!defined ($t = getnexttag($p,"div")));
-				last if  ($t->[2]->{class} ne "description") ;
-
-				last if (!defined ($t = getnexttag($p,"/p")));
-				$progdesc = $t->[3];
-			} else {
-				print "Unknown class " . $t->[2]->{class} ;
-			}
-		
+		while (defined($t =  getnexttag($p,'div'))) {
+			next if (!defined ($t->[2]->{class}));
+			last if  ($t->[2]->{class} eq "episode-details") ;
 		}
-		$log->debug("Progclass=\'$progclass\' progtitle=\'$progtitle\' playaudio=$playaudio");
+		
+		last if (!defined ($t = getnexttag($p,"h3")));
+		if ( defined ($t->[2]->{title})) {
+			$h3title = $t->[2]->{title};
+			$t = getnexttag($p,"a");
+			$t = getnexttag($p,"/a");
+			$progsetitle = $t->[3];
+			$progsetitle =~ s/^\s*//; 
+    			$progsetitle =~ s/\s*$//; 
+			$progsetitle = Encode::decode_utf8( $progsetitle );
+
+		} 
+
+		last if (!defined ($t = getnexttag($p,"/h3")));
+		last if (!defined ($t = getnexttag($p,"a")));
+		if (defined ($t->[2]->{class})) {
+			$playaudio = ($t->[2]->{class} =~ m/cta-audio/);
+		}
+		if (defined ($t->[2]->{href})) {
+			$progurl = $t->[2]->{href};
+		}
+
+		$t = getnexttag($p,"/a");
+		$progeptitle = $t->[3];
+		$progeptitle =~ s/^\s*//; 
+    		$progeptitle =~ s/\s*$//; 
+
+		$t = getnexttag($p,"p");
+		$t = getnexttag($p,"/p");
+		$progdesc = $t->[3];
+		$progdesc =~ s/^\s*//; 
+    		$progdesc =~ s/\s*$//; 
+
+		$log->debug("Progclass=\'$progclass\' progtitle=\'$progsetitle\' playaudio=$playaudio");
 		next unless ($playaudio);
 		if ( $progclass =~ m/unav/) {
-			$log->info(" Episode unavailable $progtitle");
+			$log->info(" Episode unavailable $progsetitle");
 		}
+
 		elsif (($progclass eq 'episode single-ep') || ($progclass =~ m/most-recent/) ) {
 			push @$savedstreams, {
-				'name'   => $progtitle,
+				'name'   => $progsetitle . ' - ' . $progeptitle,
 				'url'    => 'http://www.bbc.co.uk' . $progurl,
 				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
 				'type'   => 'playlist',
@@ -311,7 +346,7 @@ sub parse
 		}
 		elsif ($progclass eq 'episode last other-eps') {
 			push @$submenu, {
-				'name'   => $progtitle,
+				'name'   => $progsetitle . ' - ' . $progeptitle,
 				'url'    => 'http://www.bbc.co.uk' . $progurl,
 				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
 				'type'   => 'playlist',
@@ -319,7 +354,7 @@ sub parse
 
 				};
  			push @$savedstreams, {
-				'name'   => $setitle . ' - other episodes',
+				'name'   => $progsetitle . ' - other episodes',
 				'items'  => \@$submenu,
 				'type'   => 'opml',
 				};
@@ -327,7 +362,7 @@ sub parse
 		}
 		else  {
 			push @$submenu, {
-				'name'   => $progtitle,
+				'name'   => $progsetitle . ' - ' . $progeptitle,
 				'url'    => 'http://www.bbc.co.uk' . $progurl,
 				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
 				'type'   => 'playlist',
@@ -340,9 +375,7 @@ sub parse
 
 	if (($totalpages > 1) && ($currentpage != $totalpages)) {
 		$params->{'aliensavedstreams'} = $savedstreams ;
-	
 		my $newurl =  'http://www.bbc.co.uk' . $pageurls{($currentpage+1)} ;
-#		my $newurl = $params->{'alieniplayerrooturl'} . '?page=' . ($currentpage+1);
 		$log->info("parser redirecting to $newurl");
 		return {
 			'type' => 'redirect',
@@ -362,14 +395,13 @@ sub parse
 			'name'		=> "No programs found",
 			'description'	=> "No programs found",
 		};
-		
+
 		return {
 			'type'  => 'opml',
 			'title' => $params->{'feedTitle'},
 			'items' => \@$savedstreams,
 		};
 	}
-
 
 	# return xmlbrowser hash
 	return {
