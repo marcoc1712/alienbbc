@@ -22,7 +22,12 @@ my $log   = logger('plugin.alienbbc');
 my $prefs = preferences('plugin.alienbbc');
 
 $prefs->migrate(1, sub {
-	$prefs->set('ignore', Slim::Utils::Prefs::OldPrefs->get('plugin_alienbbc_ignore') || [ 'r2online_id.rm','r3g2ident.rm' ]);
+	$prefs->set('ignore', Slim::Utils::Prefs::OldPrefs->get('plugin_alienbbc_ignore') || [ 'r2online_id.rm' ]);
+	1;
+});
+
+$prefs->migrate(2, sub {
+	$prefs->set('ignore', [ @{$prefs->get('ignore')}, 'r3g2ident.rm' ]);
 	1;
 });
 
