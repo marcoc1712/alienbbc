@@ -44,6 +44,10 @@
 #   2.4a2   - Add ability to disable bandwidth parameter from settings page
 #           - Add windows mplayer test from settings page
 #           - Revert unix version to -cache size of 128 for streaming to players as flac
+#           - Update iPlayer web parsers due to web site changes.
+#           - update Local radio & regional radio handling to iPlayer web page formats
+#           - removed WhatsOn Addon as BBC no longer updates the web page - iPlayer Schedules now provides similar info 
+#           - Add radio 3 ident to ignore list in Settings.pm
 
 package Plugins::Alien::Plugin;
 

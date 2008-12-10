@@ -101,7 +101,7 @@ sub parse
 		next if  ($t->[2]->{class} ne "semp-visual") ;
 		last if (!defined ($t = getnexttag($p,"a")));
 		$proghref= $t->[2]->{href};
-		$log->info( "found tag a url=$proghref");
+#		$log->info( "found tag a url=$proghref");
 
 		last if (!defined ($t = getnexttag($p,"/a")));
 		last if (!defined ($t = getnexttag($p,"/p")));
@@ -120,10 +120,10 @@ sub parse
 		return {
 			'type'  => 'opml',
 			'items' => [ {
-				'name' => $progtext,
+				'name' => Encode::decode_utf8($progtext),
 				'url'  => $proghref,
 				'type' => 'audio',
-				'description' => $progdescr,
+				'description' => Encode::decode_utf8( $progdescr),
 				'icon' => $params->{'item'}->{'icon'},
 			} ],
 		};
