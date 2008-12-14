@@ -4,14 +4,11 @@
 		<div>[% "PLUGIN_ALIENBBC_DESC" | string %]</div>
 	[% END %]
 
-	[% WRAPPER setting title="PLUGIN_ALIENBBC_ADDON" desc="" %]
-		<div>[% "PLUGIN_ALIENBBC_ADDON_DESC" | string %]</div>
-	[% END %]
-
 	[% WRAPPER setting title="PLUGIN_ALIENBBC_MPLAYER" desc="PLUGIN_ALIENBBC_MPLAYER_DESC" %]
 		<div>[% "PLUGIN_ALIENBBC_MPLAYER_" _ mplayer.0 | string %] [% IF mplayer.1 %]([% mplayer.1 %])[% END %]
 		[% IF enabletest %]  -  <a href="[% webroot %]plugins/Alien/settings/basic.html?testmplayer=1">[% "PLUGIN_ALIENBBC_TESTMPLAYER" | string %]</a>[% END %]
 		</div>
+		[% IF nomplayer_os %]<div>[% "PLUGIN_ALIENBBC_MPLAYER_HELP_" _ nomplayer_os | string %]</div>[% END %]
 	[% END %]
 
 	[% IF showbandwidth %]

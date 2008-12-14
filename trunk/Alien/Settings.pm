@@ -86,9 +86,16 @@ sub handler {
 		$params->{'disabledbandwidth'} = $prefs->get('disabledbandwidth');
 	}
 
-	if ($^O =~ /Win32/ && $plugin->mplayer =~ /found|download_ok/) {
+	if ($^O =~ /^m?s?win/i) {
 
-		$params->{'enabletest'} = 1;
+		if ($plugin->mplayer eq 'found' || $plugin->mplayer eq 'download_ok') {
+
+			$params->{'enabletest'} = 1;
+		}
+
+	} elsif ($plugin->mplayer ne 'found') {
+
+		$params->{'nomplayer_os'} = ($^O =~ /darwin/i) ? 'mac' : 'unix';
 	}
 
 	return $class->SUPER::handler($client, $params);
@@ -108,7 +115,13 @@ sub importNewMenuFiles {
 	$log->info($clear ? "clearing old menu" : "searching for new menu files to import");
 
 	my @files = ();
-	my $iter  = File::Next::files({ 'file_filter' => sub { /\.opml$/ }, 'descend_filter' => sub { $_ ne 'HTML' } }, $plugin->pluginDir );
+	my $iter  = File::Next::files(
+		{
+			'file_filter' => sub { /\.opml$/ },
+			'descend_filter' => sub { $_ ne 'HTML' },
+		},
+		$plugin->_searchDirs
+	);
 
 	while (my $file = $iter->()) {
 		if ( !$imported->{ $file } || (stat($file))[9] > $imported->{ $file } ) {
@@ -202,7 +215,7 @@ sub _import {
 # create a new cmd window on windows and run mplayer with a known real stream to verify mplayer is working
 sub _testMplayerWindows {
 
-	return unless $^O =~ /Win32/;
+	return unless $^O =~ /^m?s?win/i;
 
 	my $testUrl = 'http://www.bbc.co.uk/radio2/realmedia/fmg2.ram';
 
