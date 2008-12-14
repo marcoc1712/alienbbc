@@ -48,6 +48,9 @@
 #           - update Local radio & regional radio handling to iPlayer web page formats
 #           - removed WhatsOn Addon as BBC no longer updates the web page - iPlayer Schedules now provides similar info 
 #           - Add radio 3 ident to ignore list in Settings.pm
+#   2.4a3   - Improve mplayer check - add warning via all user interfaces if mplayer not found & more description text on settings page
+#           - Update mplayer.sh to use paths from latest OSX MPlayer installation
+#           - Allow addons to exist in any Plugin directory starting Alien (allows them to added as new plugins via Extension Downloader)
 
 package Plugins::Alien::Plugin;
 
@@ -57,6 +60,7 @@ use base qw(Slim::Plugin::OPMLBased);
 
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
+use Slim::Utils::Strings qw(string);
 
 # create log categogy before loading other modules
 my $log = Slim::Utils::Log->addLogCategory({
@@ -80,6 +84,14 @@ my $menuUrl; # store the menu url here
 
 my @mplayer;
 
+# paths searched by mplayer.sh for mplayer so we can report it exists accurately
+my @macMplayerPaths = (
+	'/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/mplayer',
+	'/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer_noaltivec.app/Contents/MacOS/mplayer',
+	'/usr/local/bin/mplayer'
+);
+
+
 # Main plugin is a subclass of OPMLBased - not much to do here:
 
 sub initPlugin {
@@ -90,18 +102,28 @@ sub initPlugin {
 	Plugins::Alien::Settings->new($class);
 
 	$class->SUPER::initPlugin(
-		feed => $class->menuUrl,
 		tag  => 'alien',
 		menu => 'radios'
 	);
 
-	if (exists &Slim::Utils::OSDetect::isWindows && Slim::Utils::OSDetect::isWindows()) {
+	if ($^O =~ /^m?s?win/i) {
 
 		require Plugins::Alien::WindowsDownloader;
 
 		Plugins::Alien::WindowsDownloader->checkMplayer($class);
 
-	} elsif (Slim::Utils::Misc::findbin('mplayer') || Slim::Utils::Misc::findbin('mplayer.exe')) {
+	} elsif ($^O =~/darwin/i) {
+
+		if (map -x, @macMplayerPaths) {
+
+			$class->mplayer('found');
+
+		} else {
+
+			$class->mplayer('notfound');
+		}
+		
+	} elsif (Slim::Utils::Misc::findbin('mplayer')) {
 
 		$class->mplayer('found');
 
@@ -111,6 +133,28 @@ sub initPlugin {
 	}
 
 	Plugins::Alien::Settings->importNewMenuFiles;
+}
+
+sub feed {
+	my $class  = shift;
+
+	my $mplayer = $class->mplayer;
+
+	if ($mplayer eq 'found' || $mplayer eq 'download_ok') {
+
+		return $class->menuUrl;
+
+	} else {
+
+		my $mesg = {
+			name        => string('PLUGIN_ALIENBBC_MPLAYER_' . ($mplayer eq 'downloading' ? 'DOWNLOADING' : 'ERROR')), 
+			description => string('PLUGIN_ALIENBBC_MPLAYER_ERROR_DESC'),
+		};
+
+		# hack to get around xmlbrowser not supporting a hash in button mode
+		my ($caller) = (caller(1))[3];
+		return $caller =~ /setMode/ ? sub { $_[1]->($mesg) } : { title => string('PLUGIN_ALIENBBC'), items => [ $mesg ]	};
+	}
 }
 
 sub menuUrl {
@@ -162,10 +206,33 @@ sub mplayer {
 	return wantarray ? @mplayer : $mplayer[0];
 }
 
-sub pluginDir {
-	shift->_pluginDataFor('basedir');
-}
-
 sub getDisplayName { 'PLUGIN_ALIENBBC' }
+
+sub _searchDirs {
+	my $class = shift;
+
+	my @searchDirs;
+	
+	# find locations of main Plugin and Addons and add these to the path searched for opml menus
+	my @pluginDirs = Slim::Utils::OSDetect::dirsFor('Plugins');
+
+	for my $dir (@pluginDirs) {
+
+		opendir(DIR, $dir);
+
+		my @entries = readdir(DIR);
+
+		close(DIR);
+
+		for my $entry (@entries) {
+
+			if ($entry =~ /^Alien/) {
+				push @searchDirs, catdir($dir,$entry);
+			}
+		}
+	}
+
+	return @searchDirs;
+}
 
 1;

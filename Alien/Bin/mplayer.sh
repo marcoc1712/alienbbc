@@ -5,12 +5,10 @@ app=mplayer
 
 # For osx look for processor specific mplayer executable in locations used by mplayer installer
 if [ `uname` = "Darwin" ] ; then
-	if [ `uname -p` = "i386" ] && [ -x "/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer_intel.app/Contents/MacOS/mplayer" ]; then
-		app="/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer_intel.app/Contents/MacOS/mplayer"
-	elif [ `uname -p` = "powerpc" ] && [ -x "/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer_ppc.app/Contents/MacOS/mplayer" ]; then
-		app="/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer_ppc.app/Contents/MacOS/mplayer"
-	elif [ -x "/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/mplayer" ]; then
+	if [ `uname -p` = "i386" ] && [ -x "/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/mplayer" ]; then
 		app="/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/mplayer"
+	elif [ `uname -p` = "powerpc" ] && [ -x "/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer_noaltivec.app/Contents/MacOS/mplayer" ]; then
+		app="/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer_noaltivec.app/Contents/MacOS/mplayer"
 	elif [ -x /usr/local/bin/mplayer ] ; then
 		app=/usr/local/bin/mplayer
 	fi

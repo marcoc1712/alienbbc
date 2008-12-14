@@ -15,12 +15,6 @@ PLUGIN_ALIENBBC_DESC
 	DE	AlienBBC erlaubt es, BBC Radioprogramme und andere Streams auf der SqueezeBox anzuhören.
 	ES	El plugin AlienBBC permite escuchar programas de Radio BBC en tu Squeezebox.
 
-PLUGIN_ALIENBBC_ADDON
-	EN	AlienBBC Addons
-
-PLUGIN_ALIENBBC_ADDON_DESC
-	EN	The radio stations supported by AlienBBC can be extended by the addition of AlienBBC Addons.  Addons are installed by unzipping them into the Plugins/Alien/Addon folder and restarting the server.  New menu items provided by the addon should automatically appear in the AlienBBC station list.
-
 PLUGIN_ALIENBBC_SKIP
 	EN	Skip: %3d mins
 	DE	Überspringe %3d Minuten
@@ -72,19 +66,19 @@ SEEK_ERROR_RTSP_UNKNOWN_BITRATE
 	EN	Cannot seek with unknown bitrate
 
 PLUGIN_ALIENBBC_MPLAYER
-	EN	Mplayer
+	EN	MPlayer
 
 PLUGIN_ALIENBBC_MPLAYER_DESC
-	EN	AlienBBC requires mplayer to play real audio streams.<br />For windows platforms AlienBBC will attempt to install mplayer for you by downloading from www.mplayerhq.hu.<br />For Mac please download and install the mplayer diskimage from www.mplayerhq.hu.<br />For linux please install mplayer from your distribution, e.g. for Ubuntu: 'sudo apt-get install mplayer-nogui'.
+	EN	AlienBBC requires mplayer to play real audio streams.<br />For windows platforms AlienBBC will attempt to install mplayer for you by downloading from www.mplayerhq.hu.<br />For Mac and Linux/Unix platforms you will need to install MPlayer yourself.
 
 PLUGIN_ALIENBBC_MPLAYER_FOUND
 	EN	Installed
 
 PLUGIN_ALIENBBC_MPLAYER_NOTFOUND
-	EN	<b>Mplayer is not installed</b>
+	EN	<b>MPlayer is not installed</b>
 
 PLUGIN_ALIENBBC_MPLAYER_DOWNLOADING
-	EN	Downloading Mplayer from www.mplayerhq.hu
+	EN	Downloading MPlayer - please wait
 
 PLUGIN_ALIENBBC_MPLAYER_DOWNLOAD_FAILED
 	EN	<b>Download Failed</b>
@@ -107,4 +101,15 @@ PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH_0
 PLUGIN_ALIENBBC_MPLAYER_BANDWIDTH_1
 	EN	Disabled
 
-	
+PLUGIN_ALIENBBC_MPLAYER_ERROR
+	EN	Error: MPlayer not found
+
+PLUGIN_ALIENBBC_MPLAYER_ERROR_DESC
+	EN	Please go to the Alien BBC web settings page for more information (Settings - Advanced - Alien BBC)
+
+PLUGIN_ALIENBBC_MPLAYER_HELP_UNIX
+	EN	Please install mplayer using the appropriate method for your distribution.  For example, on unbuntu this is 'sudo apt-get install mplayer-nogui'.
+
+PLUGIN_ALIENBBC_MPLAYER_HELP_MAC
+	EN	Please download and install the OSX version of MPlayer from www.mplayerhq.hu.  The following <a href="http://www.mplayerhq.hu/MPlayer/releases/MPlayerOSX_1.0rc2.dmg">link</a> is the current MPlayer disk image.  Download and open it and then drag the MPlayer icon into your Applications folder.  You will need to restart SqueezeCenter once you have installed MPlayer.
+
