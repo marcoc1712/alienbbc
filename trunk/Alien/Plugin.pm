@@ -114,7 +114,7 @@ sub initPlugin {
 
 	} elsif ($^O =~/darwin/i) {
 
-		if (map -x, @macMplayerPaths) {
+		if (grep {-x $_} @macMplayerPaths) {
 
 			$class->mplayer('found');
 
@@ -208,7 +208,11 @@ sub mplayer {
 
 sub getDisplayName { 'PLUGIN_ALIENBBC' }
 
-sub _searchDirs {
+sub pluginDir {
+	shift->_pluginDataFor('basedir');
+}
+
+sub searchDirs {
 	my $class = shift;
 
 	my @searchDirs;

@@ -91,6 +91,10 @@ sub handler {
 		if ($plugin->mplayer eq 'found' || $plugin->mplayer eq 'download_ok') {
 
 			$params->{'enabletest'} = 1;
+
+		} elsif ($plugin->mplayer eq 'downloading') {
+
+			$params->{'nomplayer_os'} = 'win';
 		}
 
 	} elsif ($plugin->mplayer ne 'found') {
@@ -120,7 +124,7 @@ sub importNewMenuFiles {
 			'file_filter' => sub { /\.opml$/ },
 			'descend_filter' => sub { $_ ne 'HTML' },
 		},
-		$plugin->_searchDirs
+		$plugin->searchDirs
 	);
 
 	while (my $file = $iter->()) {
