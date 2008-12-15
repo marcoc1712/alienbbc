@@ -107,6 +107,9 @@ PLUGIN_ALIENBBC_MPLAYER_ERROR
 PLUGIN_ALIENBBC_MPLAYER_ERROR_DESC
 	EN	Please go to the Alien BBC web settings page for more information (Settings - Advanced - Alien BBC)
 
+PLUGIN_ALIENBBC_MPLAYER_HELP_WIN
+	EN	Please wait while Alien downloads MPlayer, this may take 2-5 minutes.  You may check progress by pressing "Apply" below which will refresh this page.  Please be patient and wait until the link above no longer says downloading.  If the server fails to download mplayer the first time, you may find this is resolved by restarting the server as the download is only initiated on a server restart.
+
 PLUGIN_ALIENBBC_MPLAYER_HELP_UNIX
 	EN	Please install mplayer using the appropriate method for your distribution.  For example, on unbuntu this is 'sudo apt-get install mplayer-nogui'.
 
