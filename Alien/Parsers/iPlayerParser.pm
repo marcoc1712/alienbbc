@@ -125,11 +125,12 @@ sub parse
 		my $itemname;
 		my $itemurl;
 
+		$p->report_tags(qw(a ul li));
+
 		while (defined($t =  getnexttag($p,"ul"))) {
 			next if (!defined ($t->[2]->{id}));
 			last if  ($t->[2]->{id} eq "nav-schedule") ;
 		}
-		$p->report_tags(qw(a ul li));
 
 		while(defined($t = getnext2tag($p,"li","/ul"))) {
 			last if ($t->[1] eq "/ul");
