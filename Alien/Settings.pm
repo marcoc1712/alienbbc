@@ -31,7 +31,7 @@ $prefs->migrate(2, sub {
 	1;
 });
 
-$prefs->init({ disablebandwith => 0 });
+$prefs->init({ disablebandwidth => 0 });
 
 my $plugin; # the main plugin class
 
