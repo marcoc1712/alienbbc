@@ -13,8 +13,8 @@
 	  <desc  lang="EN">AlienBBC allows you to listen to BBC Radio streams via Squeezecenter.  It also adds the ability to listen to many other radio streams using Real Audio via Squeezecenter.  Alien requires the use of mplayer to decode real audio streams.  Please view the AlienBBC settings page after installing for more information.</desc>
 	  <link>http://www.x2systems.com/alienbbc</link>
 	  <creator>AlienBBC Team</creator>
-	  <url>http://alienbbc.googlecode.com/files/alienbbc-windows-v2.4a3-7.3.zip</url>
-	  <sha>ee961565c4a2a457b07c0daee2f5a2b2f0a5e22a</sha>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-windows-v2.4a4-7.3.zip</url>
+	  <sha>9b5b033b140d5c3601142ea9cfb98874e2a512fc</sha>
 	</plugin>
 
 	<plugin name="Alien" version="2.4a3-7.3" target="mac|unix" minTarget="7.3" maxTarget="7.*">
@@ -22,8 +22,8 @@
 	  <desc  lang="EN">AlienBBC allows you to listen to BBC Radio streams via Squeezecenter.  It also adds the ability to listen to many other radio streams using Real Audio via Squeezecenter.  Alien requires the use of mplayer to decode real audio streams.  Please view the AlienBBC settings page after installing for more information.</desc>
 	  <link>http://www.x2systems.com/alienbbc</link>
 	  <creator>AlienBBC Team</creator>
-	  <url>http://alienbbc.googlecode.com/files/alienbbc-linux-v2.4a3-7.3.zip</url>
-	  <sha>f24671c6ad2f490d80a693b83c48f1f0a311f431</sha>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-linux-v2.4a4-7.3.zip</url>
+	  <sha>c16de8c56b7a97dac7226646ecc436a337fa9051</sha>
 	</plugin>
 
   </plugins>
