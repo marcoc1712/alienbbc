@@ -1,0 +1,5 @@
+MPlayer - The Movie Player (http://www.mplayerhq.hu)
+
+MPlayer was originally written by Árpád Gereöffy and has been extended and worked on by many more since then, see the AUTHORS file for an (incomplete) list. You are free to use it under the terms of the GNU General Public License, as described in the LICENSE file.
+
+MPlayer as a whole is copyrighted by the MPlayer team. Individual copyright notices can be found in the file headers. Furthermore, MPlayer includes code from several external sources.

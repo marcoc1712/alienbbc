@@ -1,0 +1,15 @@
+AlienBBC Copyright © Jules Taplin, Craig Eales, Triode, Neil Sleightholm, Bryan Alton 2004-2008
+
+A SqueezeCenter (http://www.slimdevices.com) plugin for playing Real Audio streams from the BBC Radio Service using mplayer.
+
+This is a plugin primarily designed to browse and play BBC Streams. Recent additions include the ability to play stream from other radio stations.
+
+This code is derived from code with the following copyright message:
+
+SqueezeCenter Copyright (C) 2001-2008 Logitech. This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License, version 2.
+
+MPlayer - The Movie Player (http://www.mplayerhq.hu)
+
+MPlayer was originally written by Árpád Gereöffy and has been extended and worked on by many more since then, see the AUTHORS file for an (incomplete) list. You are free to use it under the terms of the GNU General Public License, as described in the LICENSE file.
+
+MPlayer as a whole is copyrighted by the MPlayer team. Individual copyright notices can be found in the file headers. Furthermore, MPlayer includes code from several external sources.
