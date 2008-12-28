@@ -71,3 +71,4 @@ popd > /dev/null
 echo "Release available at: /tmp/alienbbc-windows-v"$VERSION73".zip"
 
 rm -Rf /tmp/alienbbc_release
+
