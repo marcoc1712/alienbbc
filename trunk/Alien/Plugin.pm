@@ -51,6 +51,8 @@
 #   2.4a3   - Improve mplayer check - add warning via all user interfaces if mplayer not found & more description text on settings page
 #           - Update mplayer.sh to use paths from latest OSX MPlayer installation
 #           - Allow addons to exist in any Plugin directory starting Alien (allows them to added as new plugins via Extension Downloader)
+#   2.4a4   - Allow install of mplayer on path or in server Bin folder for windows
+
 
 package Plugins::Alien::Plugin;
 
@@ -106,7 +108,11 @@ sub initPlugin {
 		menu => 'radios'
 	);
 
-	if ($^O =~ /^m?s?win/i) {
+	if (Slim::Utils::Misc::findbin('mplayer')) {
+
+		$class->mplayer('found');
+
+	} elsif ($^O =~ /^m?s?win/i) {
 
 		require Plugins::Alien::WindowsDownloader;
 
@@ -123,10 +129,6 @@ sub initPlugin {
 			$class->mplayer('notfound');
 		}
 		
-	} elsif (Slim::Utils::Misc::findbin('mplayer')) {
-
-		$class->mplayer('found');
-
 	} else {
 
 		$class->mplayer('notfound');
