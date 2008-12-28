@@ -19,11 +19,6 @@ sub checkMplayer {
 
 	my $bindir = catdir($plugin->pluginDir, 'Bin');
 
-	if (-e catdir($bindir, $mplayer)) {
-		$plugin->mplayer('found');
-		return 1;
-	}
-
 	if (! -w $bindir) {
 		$plugin->mplayer('download_failed', "$bindir is not writable");
 		return 0;

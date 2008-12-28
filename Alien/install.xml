@@ -4,7 +4,7 @@
 	<name>PLUGIN_ALIENBBC</name>
 	<module>Plugins::Alien::Plugin</module>
 	<playerMenu>RADIO</playerMenu>
-	<version>2.4a3-7.1_7.2</version>
+	<version>2.4a4-7.1_7.2</version>
 	<description>PLUGIN_ALIENBBC_DESC</description>
 	<creator>The AlienBBC Team</creator>
 	<defaultState>enabled</defaultState>
