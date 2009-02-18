@@ -98,6 +98,7 @@ sub parse
     my $progurl;
     my $progdesc;
     my $progstack;
+    my $progimg;
 
     my $t;
     my $currentpage;
@@ -293,7 +294,14 @@ sub parse
 		$progclass =~ s/ odd//;
 		$progclass =~ s/ stack//;
 
-		while (defined($t =  getnexttag($p,'div'))) {
+		$progimg = undef;
+		while (defined($t =  getnext2tag($p,'div','img'))) {
+
+			if ($t->[1] eq 'img') {
+				$progimg = defined ($t->[2]->{src}) ? $t->[2]->{src} : undef ;
+				next ;
+			}
+
 			next if (!defined ($t->[2]->{class}));
 			last if  ($t->[2]->{class} eq "episode-details") ;
 		}
@@ -342,6 +350,7 @@ sub parse
 				'url'    => 'http://www.bbc.co.uk' . $progurl,
 				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
 				'type'   => 'playlist',
+				'icon'   => $progimg,
 				'description' => $progdesc,
 				};
 		}
@@ -351,6 +360,7 @@ sub parse
 				'url'    => 'http://www.bbc.co.uk' . $progurl,
 				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
 				'type'   => 'playlist',
+				'icon'   => $progimg,
 				'description' => $progdesc,
 
 				};
@@ -367,6 +377,7 @@ sub parse
 				'url'    => 'http://www.bbc.co.uk' . $progurl,
 				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
 				'type'   => 'playlist',
+				'icon'   => $progimg,
 				'description' => $progdesc,
 				};
 		}
