@@ -26,6 +26,29 @@ Slim::Player::ProtocolHandlers->registerHandler('rtsp', __PACKAGE__);
 Slim::Formats::Playlists->registerParser('rtsppl', 'Plugins::Alien::Playlists::RTSPPL');
 Slim::Formats::Playlists->registerParser('smilpl', 'Plugins::Alien::Playlists::SMIL');
 
+#  Hash holds any URL for playlist (e.g. http://....ram)  or rtsp url and associated image url froim iPlayer menu. 
+my %urlimg;
+
+sub set_urlimg {
+	my $url = shift;
+	my $img = shift;
+#
+# BBC use the following images sizes: 86x48 150x84 178x100 512x288 528x297 640x360
+# so change requested size to size to suit Squeezeplay - otherwise image is streched
+# and fuzzy.
+#
+	$img =~ s/_86_48.jpg/_512_288.jpg/;
+	$img =~ s/_178_100.jpg/_512_288.jpg/;
+	$img =~ s/_120_68.jpg/_512_288.jpg/;
+
+	$urlimg{$url} = $img;
+}
+
+
+sub get_urlimg {
+	my $url = shift;
+	return defined($urlimg{$url}) ?  $urlimg{$url} : undef;
+}
 
 sub new {
 	my $class = shift;
@@ -140,7 +163,8 @@ sub scanStream {
 sub getMetadataFor {
 	my ( $class, $client, $url, $forceCurrent ) = @_;
 
-	my $icon = Plugins::Alien::Plugin->_pluginDataFor('icon');
+	my $icon = get_urlimg($url);
+	$icon = Plugins::Alien::Plugin->_pluginDataFor('icon') if (!defined($icon));
 
 	$log->debug("Begin Function for $url $icon");
 

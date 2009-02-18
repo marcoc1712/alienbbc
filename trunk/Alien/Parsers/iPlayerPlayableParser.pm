@@ -116,7 +116,9 @@ sub parse
 			$progdescr = $t->[3];
 			$progdescr =~ s|<br />|\n|g;
 		}
-		
+
+		Plugins::Alien::RTSP::set_urlimg($proghref, $params->{'item'}->{'icon'});
+
 		return {
 			'type'  => 'opml',
 			'items' => [ {

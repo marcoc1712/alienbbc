@@ -31,6 +31,8 @@ sub read {
 
     $log->info("Ignoring: $ignore");
     $log->info("parsing rtsp playlist: $list");
+    my $icon = Plugins::Alien::RTSP::get_urlimg($list);
+
 
     while (defined($pl) && (my $entry = <$pl>)) {
 
@@ -69,6 +71,8 @@ sub read {
 
         # Append the count if there is more than one stream
         $title .= " [$count]" if ($count > 1);
+
+	Plugins::Alien::RTSP::set_urlimg($entry, $icon) if defined($icon);
 
         push @items, $class->_updateMetaData($entry, { TITLE => $title } );
     }
