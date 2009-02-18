@@ -147,6 +147,17 @@ sub getMetadataFor {
 	my $rtspmetadata = $client->scanData->{rtspmetadata} ;
 
 	my $track = $client->pluginData('currentTrack');
+
+#
+# Fix to use program title extracted from iPlayer menu or Favorites to be shown rather than generic if BBC have put generic Title on program
+#
+	if (defined ($rtspmetadata->{'title'}) && !defined ($rtspmetadata->{'author'}) ) {
+	  if ($rtspmetadata->{'title'} =~ m/BBC Radio (1|2|3|4|5 live|6 Music|7|1Xtra) \(international\)/i ) {
+		$rtspmetadata->{'author'} = $rtspmetadata->{'title'};
+		$rtspmetadata->{'title'} = undef;
+	  }
+	}
+
 	if (defined($track)) {
 		if ($track->title eq $url && defined ($rtspmetadata->{'title'} )) {
 			Slim::Music::Info::setCurrentTitle( $url, $rtspmetadata->{'title'} . "  ". $rtspmetadata->{'author'}  );
