@@ -5,10 +5,10 @@ rtsp wav * *
 	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$
 rtsp mp3 * *
 	# RB:{BITRATE=-B %B}
-	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0 -ao pcm:file=/dev/fd/3 $FILE$ | [lame] --silent -q $QUALITY$ $BITRATE$ - -
+	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$ | [lame] --silent -r -x -q $QUALITY$ -b $BITRATE$ - -
 rtsp flc * *
 	# R
-	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0 -ao pcm:file=/dev/fd/3 $FILE$ | [flac] -cs --totally-silent --compression-level-0 -
+	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$ | [flac]  -cs --totally-silent --endian=little --channels=2 --sign=signed --bps=16 --sample-rate=44100 --compression-level-0 -
 
 # 
 # WMA for mplayer pre7 or later
@@ -17,8 +17,8 @@ wma wav * *
 	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$
 wma mp3 * *
 	# FRB:{BITRATE=-B %B}T:{START=-ss %s}U:{DURATION=-endpos %w}
-	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0 -ao pcm:file=/dev/fd/3 $FILE$ | [lame] --silent -q $QUALITY$ $BITRATE$ - -
+	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$ | [lame] --silent -r -x -q $QUALITY$ $BITRATE$ - -
 wma flc * *
 	# FRT:{START=-ss %s}U:{DURATION=-endpos %w}
-	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0 -ao pcm:file=/dev/fd/3 $FILE$ | [flac] -cs --totally-silent --compression-level-0 -
+	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$ | [flac]  -cs --totally-silent --endian=little --channels=2 --sign=signed --bps=16 --sample-rate=44100 --compression-level-0 -
 
