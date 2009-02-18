@@ -241,7 +241,7 @@ sub parse
 		}
 
 
-		if (($progclass eq 'episode single-ep') || ($progclass =~ m/most-recent/) ) {
+		if (($progclass eq 'episode single-ep') || ($progclass eq 'episode') || ($progclass =~ m/most-recent/) ) {
 			push @$savedstreams, $progentry;
 		}
 		elsif ($progclass eq 'episode last other-eps') {

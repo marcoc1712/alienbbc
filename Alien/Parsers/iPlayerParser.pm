@@ -336,7 +336,7 @@ sub parse
 			$log->info(" Episode unavailable $progsetitle");
 		}
 
-		elsif (($progclass eq 'episode single-ep') || ($progclass =~ m/most-recent/) ) {
+		elsif (($progclass eq 'episode single-ep') || ($progclass eq 'episode') || ($progclass =~ m/most-recent/) ) {
 			push @$savedstreams, {
 				'name'   => $progsetitle . ' - ' . $progeptitle,
 				'url'    => 'http://www.bbc.co.uk' . $progurl,
