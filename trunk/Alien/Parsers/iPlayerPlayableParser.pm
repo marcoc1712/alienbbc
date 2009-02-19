@@ -87,13 +87,14 @@ sub parse
     my $proghref;
     my $progtext;
     my $progdescr  = $params->{'item'}->{'description'} ;
+    my $progimg;
 
 	$log->info( "Playerable parsing $url");
 
 	my $p = HTML::PullParser->new(api_version => 3, doc => ${$http->contentRef},
 			      	    	  start => 'event, tag, attr,  skipped_text',
 				    	  end   => 'event, tag, dtext, skipped_text',
-				          report_tags => [qw ( a div ul li p dl )]);
+				          report_tags => [qw ( a div ul img li p dl )]);
 
 	my $t; 
 	while (defined($t =  getnexttag($p,"div"))) {
@@ -109,6 +110,14 @@ sub parse
 		$progtext =~ s/ to launch //;
 		$progtext =~ s/ in Real Player.//;
 		$log->info( "Prog text = \'$progtext\' URL=$proghref");
+
+		last if (!defined ($t = getnexttag($p,"img")));
+		if ((defined($t->[2]->{class} )) && ($t->[2]->{class} eq "semp-image-jsdisabled") ) {
+			$progimg = $t->[2]->{src};
+			$log->error("Progimg = $progimg");	
+		}
+
+
 		while (defined ($t = getnexttag($p,"div"))) {
 			last if (!defined($t->[2]->{class} ));
 			last if  (!defined ( $t->[2]->{class} ) && ($t->[2]->{class} ne "detail")) ;
@@ -117,7 +126,12 @@ sub parse
 			$progdescr =~ s|<br />|\n|g;
 		}
 
-		Plugins::Alien::RTSP::set_urlimg($proghref, $params->{'item'}->{'icon'});
+		if (defined($params->{'item'}->{'icon'})) {
+			Plugins::Alien::RTSP::set_urlimg($proghref, $params->{'item'}->{'icon'});
+		}
+		else {
+			Plugins::Alien::RTSP::set_urlimg($proghref, $progimg);
+		}
 
 		return {
 			'type'  => 'opml',
