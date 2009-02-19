@@ -99,6 +99,7 @@ sub parse
     my $progdesc;
     my $progstack;
     my $progimg;
+    my $otherepstitle;
 
     my $t;
     my $currentpage;
@@ -293,6 +294,9 @@ sub parse
 # remove odd from class as it governs background shading.
 		$progclass =~ s/ odd//;
 		$progclass =~ s/ stack//;
+		$progclass =~ s/ other-eps-show//;
+		$progclass =~ s/ open-brand//;
+		$progclass =~ s/ \d+//;
 
 		$progimg = undef;
 		while (defined($t =  getnext2tag($p,'div','img'))) {
@@ -315,7 +319,6 @@ sub parse
 			$progsetitle =~ s/^\s*//; 
     			$progsetitle =~ s/\s*$//; 
 			$progsetitle = Encode::decode_utf8( $progsetitle );
-
 		} 
 
 		last if (!defined ($t = getnexttag($p,"/h3")));
@@ -338,13 +341,21 @@ sub parse
 		$progdesc =~ s/^\s*//; 
     		$progdesc =~ s/\s*$//; 
 
-		$log->debug("Progclass=\'$progclass\' progtitle=\'$progsetitle\' playaudio=$playaudio");
+		$log->debug("Progclass=\'$progclass\' progtitle=\'$progsetitle\' eptitle=\'$progeptitle\'playaudio=$playaudio");
 		next unless ($playaudio);
 		if ( $progclass =~ m/unav/) {
 			$log->info(" Episode unavailable $progsetitle");
 		}
 
 		elsif (($progclass eq 'episode single-ep') || ($progclass eq 'episode') || ($progclass =~ m/most-recent/) ) {
+			if (defined($submenu)) {
+				push @$savedstreams, {
+					'name'   => $otherepstitle . ' - other episodes',
+					'items'  => \@$submenu,
+					'type'   => 'opml',
+					};
+				$submenu = undef;
+			}
 			push @$savedstreams, {
 				'name'   => $progsetitle . ' - ' . $progeptitle,
 				'url'    => 'http://www.bbc.co.uk' . $progurl,
@@ -353,6 +364,8 @@ sub parse
 				'icon'   => $progimg,
 				'description' => $progdesc,
 				};
+			$otherepstitle = $progsetitle;
+
 		}
 		elsif ($progclass eq 'episode last other-eps') {
 			push @$submenu, {
