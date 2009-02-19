@@ -114,7 +114,6 @@ sub parse
 		last if (!defined ($t = getnexttag($p,"img")));
 		if ((defined($t->[2]->{class} )) && ($t->[2]->{class} eq "semp-image-jsdisabled") ) {
 			$progimg = $t->[2]->{src};
-			$log->error("Progimg = $progimg");	
 		}
 
 
