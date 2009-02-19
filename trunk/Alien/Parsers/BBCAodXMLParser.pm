@@ -72,6 +72,10 @@ sub parse {
 	ENTRY: for my $entry (@{$xml->{'entry'}}) {
 
 		my $title = $entry->{'title'};  
+		my $pid   = $entry->{'pid'};
+
+# on 19-Feb09 valid nodes are node1, node2, node3 and node4. - choosing node1 as it is most likely to be always there..
+		my $icon  = "http://node1.bbcimg.co.uk/iplayer/images/episode/".$pid."_512_288.jpg";
 
 		# move info to top level of entry so we can filter on it
 		$entry->{'url'} = $entry->{'links'}->{'content'};
@@ -121,6 +125,7 @@ sub parse {
 			'url'         => $entry->{'url'},
 			'parser'      => 'Plugins::Alien::Parsers::BBCAodXMLPlayableParser',
 			'type'        => 'playlist',
+			'icon'	      => $icon,
 			'description' => $entry->{'synopsis'},
 		} if ($opts->{'byday'});
 
@@ -130,6 +135,7 @@ sub parse {
 			'url'         => $entry->{'url'},
 			'parser'      => 'Plugins::Alien::Parsers::BBCAodXMLPlayableParser',
 			'type'        => 'playlist',
+			'icon'	      => $icon,
 			'description' => $entry->{'synopsis'},
 		} if ($opts->{'bykey'});
 
@@ -139,6 +145,7 @@ sub parse {
 			'url'         => $entry->{'url'},
 			'parser'      => 'Plugins::Alien::Parsers::BBCAodXMLPlayableParser',
 			'type'        => 'playlist',
+			'icon'	      => $icon,
 			'description' => $entry->{'synopsis'},
 		} unless ($opts->{'byday'} || $opts->{'bykey'});
 

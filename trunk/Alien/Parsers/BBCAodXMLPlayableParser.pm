@@ -14,6 +14,7 @@ sub parse {
 
     my $params = $http->params('params');
     my $url    = $params->{'url'};
+    my $icon; 
 	my $stream;
 
 	my $xml = eval { XMLin($http->contentRef, KeyAttr => undef, ForceArray => 'media' ) };
@@ -32,7 +33,10 @@ sub parse {
 	}
 
 	if ($stream) {
-		$log->info("$url stream $stream");
+		$icon  =  $params->{'item'}->{'icon'};
+		$log->info("$url stream $stream icon $icon");
+		Plugins::Alien::RTSP::set_urlimg($stream, $icon);
+
 	} else {
 		$log->error("no stream found for $url");
 		use Data::Dumper;
@@ -45,6 +49,7 @@ sub parse {
 			'name' => $params->{'item'}->{'streamtitle'} || $params->{'feedTitle'},
 			'url'  => $stream,
 			'type' => 'audio',
+			'icon' => $icon,
 			'description' => $params->{'item'}->{'description'},
 		} ],
 	};
