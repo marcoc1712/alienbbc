@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<extensions>
+
+  <details>
+	<title lang="EN">Alien BBC</title>
+  </details>
+
+  <plugins>
+
+	<plugin name="Alien" version="2.4a5test-7.3" target="win" minTarget="7.3" maxTarget="7.*">
+	  <title lang="EN">Alien BBC</title>
+	  <desc  lang="EN">Beta test version of AlienBBC.</desc>
+	  <link>http://www.x2systems.com/alienbbc</link>
+	  <creator>AlienBBC Team</creator>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-windows-v2.4a5test-7.3.zip</url>
+	  <sha>d3110801538d4fdbc52025232aac72e92c7dfc59</sha>
+	</plugin>
+
+	<plugin name="Alien" version="2.4a5test-7.3" target="mac|unix" minTarget="7.3" maxTarget="7.*">
+	  <title lang="EN">Alien BBC</title>
+	  <desc  lang="EN">Beta test version of AlienBBC.</desc>
+	  <link>http://www.x2systems.com/alienbbc</link>
+	  <creator>AlienBBC Team</creator>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-linux-v2.4a5test-7.3.zip</url>
+	  <sha>b6061ba105b3fe8ffa72e91cae8f1d284a18e1b9</sha>
+	</plugin>
+
+  </plugins>
+
+</extensions>
