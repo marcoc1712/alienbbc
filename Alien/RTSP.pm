@@ -16,6 +16,7 @@ use Slim::Utils::Strings qw(string);
 use Slim::Utils::Misc;
 use Slim::Utils::Log;
 use Slim::Utils::Prefs;
+use Tie::Cache::LRU;
 
 use Plugins::Alien::RTSPScanHeaders;
 
@@ -27,7 +28,7 @@ Slim::Formats::Playlists->registerParser('rtsppl', 'Plugins::Alien::Playlists::R
 Slim::Formats::Playlists->registerParser('smilpl', 'Plugins::Alien::Playlists::SMIL');
 
 #  Hash holds any URL for playlist (e.g. http://....ram)  or rtsp url and associated image url froim iPlayer menu. 
-my %urlimg;
+tie my %urlimg, 'Tie::Cache::LRU', 32;
 
 sub set_urlimg {
 	my $url = shift;
