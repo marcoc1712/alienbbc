@@ -135,6 +135,7 @@ sub initPlugin {
 	}
 
 	Plugins::Alien::Settings->importNewMenuFiles;
+	Plugins::Alien::RTSP->loadMenuIcon(menuUrl());
 }
 
 sub feed {
