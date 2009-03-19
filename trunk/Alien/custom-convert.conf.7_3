@@ -1,24 +1,29 @@
 # AlienBBC - unix version
 # 
+rtsp pcm * *
+	# R
+	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$
 rtsp wav * *
 	# R
 	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$
 rtsp mp3 * *
 	# RB:{BITRATE=-B %B}
-	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$ | [lame] --silent -r -x -q $QUALITY$ -b $BITRATE$ - -
+	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=/dev/fd/3 $FILE$ | [lame] --silent -q $QUALITY$ -b $BITRATE$ - -
 rtsp flc * *
 	# R
-	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$ | [flac]  -cs --totally-silent --endian=little --channels=2 --sign=signed --bps=16 --sample-rate=44100 --compression-level-0 -
+	[mplayer.sh] -really-quiet -vc null -vo null -bandwidth 10000000 -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=/dev/fd/3 $FILE$ | [flac] -cs --totally-silent --compression-level-0 --ignore-chunk-sizes -
 
 # 
-# WMA for mplayer pre7 or later
+# WMA
+wma pcm * *
+	# F:{PATH=%f}R:{PATH=%F}T:{START=-ss %s}U:{DURATION=-endpos %w}
+	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $PATH$
 wma wav * *
-	# FRT:{START=-ss %s}U:{DURATION=-endpos %w}
-	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$
+	# F:{PATH=%f}R:{PATH=%F}T:{START=-ss %s}U:{DURATION=-endpos %w}
+	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $PATH$
 wma mp3 * *
-	# FRB:{BITRATE=-B %B}T:{START=-ss %s}U:{DURATION=-endpos %w}
-	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$ | [lame] --silent -r -x -q $QUALITY$ $BITRATE$ - -
+	# F:{PATH=%f}R:{PATH=%F}B:{BITRATE=-B %B}T:{START=-ss %s}U:{DURATION=-endpos %w}
+	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=/dev/fd/3 $PATH$ | [lame] --silent -q $QUALITY$ $BITRATE$ - -
 wma flc * *
-	# FRT:{START=-ss %s}U:{DURATION=-endpos %w}
-	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:nowaveheader:file=/dev/fd/3 $FILE$ | [flac]  -cs --totally-silent --endian=little --channels=2 --sign=signed --bps=16 --sample-rate=44100 --compression-level-0 -
-
+	# F:{PATH=%f}R:{PATH=%F}T:{START=-ss %s}U:{DURATION=-endpos %w}
+	[mplayer.sh] -really-quiet -vc null -vo null $START$ $DURATION$ -cache 128 -af volume=0,resample=44100:0:1,channels=2 -ao pcm:file=/dev/fd/3 $PATH$ | [flac] -cs --totally-silent --compression-level-0 --ignore-chunk-sizes -
