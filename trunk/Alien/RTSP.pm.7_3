@@ -18,8 +18,11 @@ use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Player::Song;
 use Tie::Cache::LRU;
+use Slim::Plugin::Favorites::Opml;
 
 use Plugins::Alien::RTSPScanHeaders;
+
+use Data::Dumper;
 
 my $log = logger('plugin.alienbbc');
 
@@ -33,6 +36,8 @@ Slim::Formats::Playlists->registerParser('smilpl', 'Plugins::Alien::Playlists::S
 
 #  Hash holds any URL for playlist (e.g. http://....ram)  or rtsp url and associated image url froim iPlayer menu. 
 tie my %urlimg, 'Tie::Cache::LRU', 32;
+
+my %menu_urlimg; 
 
 sub set_urlimg {
 	my $url = shift;
@@ -49,11 +54,43 @@ sub set_urlimg {
 	$urlimg{$url} = $img;
 }
 
+sub set_menu_urlimg {
+	my $url = shift;
+	my $img = shift;
+	$menu_urlimg{$url} = $img;
+}
 
 sub get_urlimg {
 	my $url = shift;
-	return defined($urlimg{$url}) ?  $urlimg{$url} : undef;
+	if (defined($urlimg{$url})) {
+		return $urlimg{$url};
+	} elsif (defined($menu_urlimg{$url})) {
+		return $menu_urlimg{$url} ; 
+	}
+	return undef;
 }
+
+sub loadMenuIcon {
+	my $class    = shift;
+	my $menuUrl  = shift; 
+	my $menuOpml = Slim::Plugin::Favorites::Opml->new({ 'url' => $menuUrl });
+	parseMenu($menuOpml->{'opml'}->{'body'}[0]->{'outline'});
+
+}
+
+sub parseMenu {
+        my $op = shift;
+
+        foreach my $entry (@{$op}) {
+
+                if (exists($entry->{'outline'})) {
+                        parseMenu($entry->{'outline'});
+                }
+                if (defined($entry->{'icon'}) && defined($entry->{'URL'}) && !defined($entry->{'parser'})  ) {
+                        $menu_urlimg{$entry->{'URL'}} =  $entry->{'icon'} ;
+                }
+        }
+};
 
 
 sub isRemote { 1 }

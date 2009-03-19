@@ -161,6 +161,7 @@ sub parse
 				'name'   => 'Schedule',
 				'items'  => \@$submenu,
 				'type'   => 'opml',
+				'icon'   => "http://radiotime-logos.s3.amazonaws.com/a33829q.png",
 				};	
 			$submenu = undef;
 		}
@@ -193,6 +194,7 @@ sub parse
 				'name'   => 'Categories',
 				'items'  => \@$submenu,
 				'type'   => 'opml',
+				'icon'   => "http://radiotime-logos.s3.amazonaws.com/a33829q.png",
 				};	
 			$submenu = undef;
 		}
@@ -353,6 +355,7 @@ sub parse
 					'name'   => $otherepstitle . ' - other episodes',
 					'items'  => \@$submenu,
 					'type'   => 'opml',
+					'icon'   => "http://radiotime-logos.s3.amazonaws.com/a33829q.png",
 					};
 				$submenu = undef;
 			}
@@ -381,6 +384,7 @@ sub parse
 				'name'   => $progsetitle . ' - other episodes',
 				'items'  => \@$submenu,
 				'type'   => 'opml',
+				'icon'   => "http://radiotime-logos.s3.amazonaws.com/a33829q.png",
 				};
 			$submenu = undef;
 		}
