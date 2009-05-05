@@ -83,7 +83,8 @@ sub parse
     my $url    = $params->{'url'};
     my $client = $params->{client};
 
-    my $topmenu = defined( $params->{'item'}->{'topmenu'}); 
+    my $topmenu      = defined( $params->{'item'}->{'topmenu'}); 
+    my $schedulemenu = defined( $params->{'item'}->{'schedule'}); 
 
     my @menus;
     my $submenu;
@@ -100,6 +101,7 @@ sub parse
     my $progstack;
     my $progimg;
     my $otherepstitle;
+    my $progtime;
 
     my $t;
     my $currentpage;
@@ -142,14 +144,17 @@ sub parse
 			$itemurl = $t->[2]->{href};
 			last if (!defined ($t = getnexttag($p,"/a")));
 			$itemname = cleanup($t->[3]);
+			$itemname =~ s/\s+\(/ \(/;
 			$log->info("schedule item $itemname");
+
 #			last if ($itemname =~ m/(tomorrow)/i);
 			next if (! ($itemname =~ m/^(Mon |Tues |Wed |Thurs |Fri |Sat |Sun )/i));
 
 			push @$submenu, {
 				'name'   => $itemname,
 				'url'    => 'http://www.bbc.co.uk' . $itemurl,
-				'parser' => 'Plugins::Alien::Parsers::iPlayerScheduleParser',
+				'parser' => 'Plugins::Alien::Parsers::iPlayerParser',
+				'schedule' => '1', 
 				};
 		}
 		$p->report_tags(qw (  a img span h1 h3 div p ul li ol ));
@@ -270,14 +275,15 @@ sub parse
 		$savedstreams = $params->{'aliensavedstreams'};
 	}
 
-	if ((defined ($t->[2]->{class})) && ($t->[2]->{class} ne "result-wrapper")) {
+	if ((defined ($t->[2]->{class})) && (($t->[2]->{class} ne 'result-wrapper') && ($t->[2]->{class} ne 'schedule result-wrapper') )) {
 	
 		while (defined($t =  getnexttag($p,'div'))) {
 			next if (!defined ($t->[2]->{class}));
-			last if  ($t->[2]->{class} eq "result-wrapper") ;
+			last if  (($t->[2]->{class} eq 'result-wrapper') ||($t->[2]->{class} eq 'schedule result-wrapper') ) ;
 		}
 	}
 	
+	my $schedulepage = ($t->[2]->{class} eq 'schedule result-wrapper');
 #	Sholuld be a div with the result class wrapper;
 	$t =  getnexttag($p,'ul');
 
@@ -299,7 +305,14 @@ sub parse
 		$progclass =~ s/ other-eps-show//;
 		$progclass =~ s/ open-brand//;
 		$progclass =~ s/ \d+//;
-
+		$progtime  = '';
+		if ($schedulepage ) {
+			$t = getnexttag($p,"div");
+			$t = getnexttag($p,"span");
+			$t = getnexttag($p,"/span");
+			$progtime = $t->[3];
+		} 
+		
 		$progimg = undef;
 		while (defined($t =  getnext2tag($p,'div','img'))) {
 
@@ -321,6 +334,7 @@ sub parse
 			$progsetitle =~ s/^\s*//; 
     			$progsetitle =~ s/\s*$//; 
 			$progsetitle = Encode::decode_utf8( $progsetitle );
+			$progsetitle = $progtime . ' ' . $progsetitle;
 		} 
 
 		last if (!defined ($t = getnexttag($p,"/h3")));
@@ -343,13 +357,21 @@ sub parse
 		$progdesc =~ s/^\s*//; 
     		$progdesc =~ s/\s*$//; 
 
-		$log->debug("Progclass=\'$progclass\' progtitle=\'$progsetitle\' eptitle=\'$progeptitle\'playaudio=$playaudio");
-		next unless ($playaudio);
-		if ( $progclass =~ m/unav/) {
+		$log->debug("Progclass=\'$progclass\' progtitle=\'$progsetitle\' eptitle=\'$progeptitle\' playaudio=$playaudio");
+		next unless ($playaudio || defined($schedulemenu));
+		if ( ($progclass =~ m/unav/) ) {
+
 			$log->info(" Episode unavailable $progsetitle");
+			if (defined($schedulemenu)) {
+				push @$savedstreams, {
+					'name'   => $progsetitle . ' - ' . $progeptitle ,
+					'icon'   => $progimg,
+					'description' => $progdesc,
+					};
+			}
 		}
 
-		elsif (($progclass eq 'episode single-ep') || ($progclass eq 'episode') || ($progclass =~ m/most-recent/) ) {
+		elsif (($progclass eq 'episode single-ep') || ($progclass eq 'episode') || ($progclass eq 'episode now-playing') || ($progclass =~ m/most-recent/) ) {
 			if (defined($submenu)) {
 				push @$savedstreams, {
 					'name'   => $otherepstitle . ' - other episodes',
@@ -398,6 +420,26 @@ sub parse
 				'description' => $progdesc,
 				};
 		}
+	}
+
+	if (($t->[1] eq "/ul") && defined($submenu)) {
+		$log->info(" Some other episodes of \"$progsetitle\" are last item ");
+			push @$submenu, {
+				'name'   => $progsetitle . ' - ' . $progeptitle,
+				'url'    => 'http://www.bbc.co.uk' . $progurl,
+				'parser' => 'Plugins::Alien::Parsers::iPlayerPlayableParser',
+				'type'   => 'playlist',
+				'icon'   => $progimg,
+				'description' => $progdesc,
+
+				};
+ 			push @$savedstreams, {
+				'name'   => $progsetitle . ' - other episodes',
+				'items'  => \@$submenu,
+				'type'   => 'opml',
+				'icon'   => "http://radiotime-logos.s3.amazonaws.com/a33829q.png",
+				};
+			$submenu = undef;
 	}
 
 	$log->info(sprintf "found %d streams on page %d/%d of url %s", ((defined($savedstreams )) ? scalar @$savedstreams : 0 ),$currentpage,$totalpages,$url);

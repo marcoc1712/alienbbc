@@ -93,7 +93,7 @@ sub parse
 
 	while (defined($t =  getnexttag($p,'div'))) {
 		next if (!defined ($t->[2]->{class}));
-		last if  ($t->[2]->{class} eq "result-wrapper") ;
+		last if  ($t->[2]->{class} eq "schedule result-wrapper") ;
 	}
 
 	$t =  getnext2tag($p,'ol','table');
