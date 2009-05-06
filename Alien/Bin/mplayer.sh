@@ -22,7 +22,9 @@ fi
 
 echo Streaming: Launching $app $* >&2
 (
-    "$app" $* 3>&1 1>&2 & 
+	exec 3>&1
+	sleep 0.1
+    "$app" $* 1>&2 & 
     echo $! > $apppid
     wait
     rm -f $apppid
