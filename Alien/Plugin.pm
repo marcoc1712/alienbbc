@@ -229,6 +229,8 @@ sub searchDirs {
 
 	for my $dir (@pluginDirs) {
 
+		next unless -d $dir;
+
 		opendir(DIR, $dir);
 
 		my @entries = readdir(DIR);
