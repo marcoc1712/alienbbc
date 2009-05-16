@@ -55,6 +55,7 @@
 #   2.5beta - Change to use wave headers between mplayer and flac/mp3
 #           - Update parsers for iPlayer site changes
 #           - Add thumbnail support to menus
+#   2.5beta1- Patch to support noweb-sqlite branch
 
 
 package Plugins::Alien::Plugin;

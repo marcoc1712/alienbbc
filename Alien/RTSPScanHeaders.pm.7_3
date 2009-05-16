@@ -11,10 +11,19 @@ use Slim::Utils::Prefs;
 use MIME::Base64 qw(decode_base64);
 use Socket qw(:crlf);
 
-__PACKAGE__->mk_classaccessors( qw(inheader raw contentlength len fields ) );
+if (__PACKAGE__->isa('Slim::Utils::Accessor')) {
+
+	# new way
+	__PACKAGE__->mk_accessor( rw => qw(inheader raw contentlength len fields ) );
+
+} else {
+
+	# old way
+	__PACKAGE__->mk_classaccessors( qw(inheader raw contentlength len fields ) );
+}
+
 
 my $log = logger('plugin.alienbbc');
-
 
 sub new {
 	my $ref = shift;
