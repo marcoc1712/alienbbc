@@ -52,10 +52,10 @@
 #           - Update mplayer.sh to use paths from latest OSX MPlayer installation
 #           - Allow addons to exist in any Plugin directory starting Alien (allows them to added as new plugins via Extension Downloader)
 #   2.4a4   - Allow install of mplayer on path or in server Bin folder for windows
-#   2.5beta - Change to use wave headers between mplayer and flac/mp3
+#   2.5     - Change to use wave headers between mplayer and flac/mp3
 #           - Update parsers for iPlayer site changes
 #           - Add thumbnail support to menus
-#   2.5beta1- Patch to support noweb-sqlite branch
+#           - Patch to support noweb-sqlite branch
 
 
 package Plugins::Alien::Plugin;
