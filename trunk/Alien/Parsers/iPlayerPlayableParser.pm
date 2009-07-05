@@ -18,7 +18,7 @@ use HTML::PullParser;
 
 my $log = logger('plugin.alienbbc');
 
-
+use Data::Dumper;
 
 sub getnexttag
 {
@@ -87,14 +87,22 @@ sub parse
     my $proghref;
     my $progtext;
     my $progdescr  = $params->{'item'}->{'description'} ;
+
     my $progimg;
+    my $detailtype;
+    my $detailvalue;
+    my %progdetails;
+
+    $progdetails{'title'}    = $params->{'item'}->{'name'} ;
+    $progdetails{'subtitle'} = $params->{'item'}->{'description'} ;
+
 
 	$log->info( "Playerable parsing $url");
 
 	my $p = HTML::PullParser->new(api_version => 3, doc => ${$http->contentRef},
 			      	    	  start => 'event, tag, attr,  skipped_text',
 				    	  end   => 'event, tag, dtext, skipped_text',
-				          report_tags => [qw ( a div ul img li p dl )]);
+				          report_tags => [qw ( a div ul img li p dl dt dd )]);
 
 	my $t; 
 	while (defined($t =  getnexttag($p,"div"))) {
@@ -105,15 +113,22 @@ sub parse
 #		$log->info( "found tag a url=$proghref");
 
 		last if (!defined ($t = getnexttag($p,"/a")));
-		last if (!defined ($t = getnexttag($p,"/p")));
+#		last if (!defined ($t = getnexttag($p,"/p")));
 		$progtext = $t->[3];
-		$progtext =~ s/ to launch //;
+		$progtext =~ s/Click here to launch //;
 		$progtext =~ s/ in Real Player.//;
 		$log->info( "Prog text = \'$progtext\' URL=$proghref");
 
 		last if (!defined ($t = getnexttag($p,"img")));
 		if ((defined($t->[2]->{class} )) && ($t->[2]->{class} eq "semp-image-jsdisabled") ) {
 			$progimg = $t->[2]->{src};
+			$progtext= $t->[2]->{alt};
+		}
+
+
+		while (defined ($t = getnexttag($p,"div"))) {
+			next if (!defined($t->[2]->{id} ));
+			last if  (defined ( $t->[2]->{id} ) && ($t->[2]->{id} eq "bip-play")) ;
 		}
 
 
@@ -123,7 +138,29 @@ sub parse
 			last if (!defined ($t = getnexttag($p,"dl")));
 			$progdescr = $t->[3];
 			$progdescr =~ s|<br />|\n|g;
+			last;
+		};
+
+		$progdetails{'longdescr'} = $progdescr;
+#	
+		while (defined ($t = getnexttag($p,'dt'))) {
+
+			$detailvalue ='';
+			last if (!defined ($t = getnexttag($p,'/dt')));
+			$detailtype = $t->[3];
+			last if (!defined ($t = getnexttag($p,'dd')));
+			last if (!defined ($t = getnexttag($p,"/dd")));
+			$detailvalue = $t->[3];
+			$log->info( "detailtype = \'$detailtype\' detailvalue=$detailvalue");
+
+			if ($detailtype =~ m/Broadcast/) {
+				$progdetails{'artist'} = $detailvalue;
+			}
+
+
+
 		}
+
 
 		if (defined($params->{'item'}->{'icon'})) {
 			Plugins::Alien::RTSP::set_urlimg($proghref, $params->{'item'}->{'icon'});
@@ -131,6 +168,9 @@ sub parse
 		else {
 			Plugins::Alien::RTSP::set_urlimg($proghref, $progimg);
 		}
+
+		Plugins::Alien::RTSP::set_urldata($proghref,\%progdetails);
+		
 
 		return {
 			'type'  => 'opml',
