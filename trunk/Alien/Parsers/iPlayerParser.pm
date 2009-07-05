@@ -300,6 +300,7 @@ sub parse
 
 # Progclass is made up of a number of words which are in the display of the episode line  "episode" "stack" "most-recent" "last" "other" "unav" and "odd" 
 # remove odd from class as it governs background shading.
+		$progclass =~ s/ title-link//;
 		$progclass =~ s/ first//;
 		$progclass =~ s/ odd//;
 		$progclass =~ s/ stack//;
