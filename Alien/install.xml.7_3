@@ -4,7 +4,7 @@
 	<name>PLUGIN_ALIENBBC</name>
 	<module>Plugins::Alien::Plugin</module>
 	<playerMenu>RADIO</playerMenu>
-	<version>2.5-7.3</version>
+	<version>2.6b1-7.3</version>
 	<description>PLUGIN_ALIENBBC_DESC</description>
 	<creator>The AlienBBC Team</creator>
 	<defaultState>enabled</defaultState>
@@ -15,6 +15,6 @@
 	<targetApplication>
 		<id>SlimServer</id>
 		<minVersion>7.3</minVersion>
-        <maxVersion>7.*</maxVersion>
+        <maxVersion>7.4</maxVersion>
 	</targetApplication>
 </extension>

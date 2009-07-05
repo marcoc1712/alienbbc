@@ -1,5 +1,5 @@
 #
-# AlienBBC Copyright (C) Jules Taplin, Craig Eales, Triode, Neil Sleightholm, Bryan Alton 2004-2008
+# AlienBBC Copyright (C) Jules Taplin, Craig Eales, Triode, Neil Sleightholm, Bryan Alton 2004-2009
 #
 # $Id: RTSP.pm.7_3,v 1.3 2008/10/30 10:10:52 triode Exp $
 #
@@ -34,10 +34,23 @@ Slim::Formats::Playlists->registerParser('rtsppl', 'Plugins::Alien::Playlists::R
 Slim::Formats::Playlists->registerParser('smilpl', 'Plugins::Alien::Playlists::SMIL');
 
 
-#  Hash holds any URL for playlist (e.g. http://....ram)  or rtsp url and associated image url froim iPlayer menu. 
+#  Hash holds any URL for playlist (e.g. http://....ram)  or rtsp url and associated image url from iPlayer menu. 
 tie my %urlimg, 'Tie::Cache::LRU', 32;
 
 my %menu_urlimg; 
+
+tie my %urldata, 'Tie::Cache::LRU', 32;
+
+sub set_urldata {
+	my $url = shift;
+	my $itemdata = shift;
+	$urldata{$url} = $itemdata;
+}
+
+sub get_urldata {
+	my $url = shift;
+	return (defined($urldata{$url})) ? $urldata{$url} : undef;
+}
 
 sub set_urlimg {
 	my $url = shift;
@@ -99,11 +112,19 @@ sub new {
 	my $class = shift;
 	my $args = shift;
 
-	my $url    = $args->{'url'};
-	my $client = $args->{'client'};
-	my $transcoder = $args->{'transcoder'};
-	my $seekdata = $args->{'song'}->{'seekdata'};
+	my $url          = $args->{'url'};
+	my $client       = $args->{'client'};
+	my $transcoder   = $args->{'transcoder'};
+	my $seekdata     = $args->{'song'}->{'seekdata'};
 	my $rtspmetadata = $args->{'song'}->{'scanData'}->{$url};
+
+	my $playlisturl  = Slim::Player::Playlist::url($client);
+	my $urldata      = get_urldata($playlisturl);
+	if (defined($urldata)) {
+		$rtspmetadata->{'webartist'}   = $urldata->{'artist'};
+		$rtspmetadata->{'webtitle'}    = $urldata->{'title'};
+		$rtspmetadata->{'websubtitle'} = $urldata->{'subtitle'};
+	} 
 
 	# Check client - only stream to known slim clients
 	if (!defined($client) || !$client->isPlayer()) {
@@ -114,6 +135,8 @@ sub new {
 	}
 
 	Slim::Music::Info::setContentType($url, 'rtsp');
+
+	$rtspmetadata->{'tracktitle'} = Slim::Music::Info::title($url);
 
  	my $track    = Slim::Schema->rs('Track')->objectForUrl({
 		'url'      => $url,
@@ -213,15 +236,6 @@ sub getMetadataFor {
 	my $track = $song->currentTrack() if $song;
 	my $rtspmetadata = $song->{'scanData'}->{$track->url} if $song;
 
-#
-# Fix to use program title extracted from iPlayer menu or Favorites to be shown rather than generic if BBC have put generic Title on program
-#
-	if (defined ($rtspmetadata->{'title'}) && !defined ($rtspmetadata->{'author'}) ) {
-	  if ($rtspmetadata->{'title'} =~ m/BBC Radio (1|2|3|4|5 live|6 Music|7|1Xtra) \(international\)/i ) {
-		$rtspmetadata->{'author'} = $rtspmetadata->{'title'};
-		$rtspmetadata->{'title'} = undef;
-	  }
-	}
 
 	if (defined($track)) {
 		if ($track->title eq $url && defined ($rtspmetadata->{'title'} )) {
@@ -232,8 +246,10 @@ sub getMetadataFor {
 	}
 
 	return {
-		title    =>  $rtspmetadata->{'title'}, 
-		artist   =>  $rtspmetadata->{'author'} ,
+		title    =>  $rtspmetadata->{'webtitle'}    || $rtspmetadata->{'title'}      || $rtspmetadata->{'tracktitle'} , 
+		artist   =>  $rtspmetadata->{'webartist'}   || $rtspmetadata->{'author'} ,
+		album	 =>  $rtspmetadata->{'websubtitle'} || $rtspmetadata->{'tracktitle'}, 
+
 		duration =>  int($rtspmetadata->{'endtime'}/1000),
 		bitrate  =>  defined($track) ? $track->prettyBitRate : $rtspmetadata->{'avgbitrate'},
 		icon   => $icon,
