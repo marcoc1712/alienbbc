@@ -18,6 +18,15 @@ use Slim::Utils::Log;
 use Slim::Utils::Prefs;
 use Slim::Player::Song;
 use Tie::Cache::LRU;
+
+use XML::Simple;
+use URI::Escape;
+use Time::Local;
+use Date::Parse;
+use POSIX qw(strftime);
+
+use constant DELAYCOUNT => 30;
+
 use Slim::Plugin::Favorites::Opml;
 
 use Plugins::Alien::RTSPScanHeaders;
@@ -115,6 +124,8 @@ sub new {
 	my $url          = $args->{'url'};
 	my $client       = $args->{'client'};
 	my $transcoder   = $args->{'transcoder'};
+	my $song         = $args->{'song'};
+
 	my $seekdata     = $args->{'song'}->{'seekdata'};
 	my $rtspmetadata = $args->{'song'}->{'scanData'}->{$url};
 
@@ -142,6 +153,35 @@ sub new {
 		'url'      => $url,
 		'readTags' => 1
 	});
+
+	my ($baseplayurl,$paramstring) = split (/\?/,$playlisturl);
+	my %ops = map {
+			my ( $k, $v ) = split( '=' );
+			$k  => (uri_unescape( $v ))
+		} split( '&', $paramstring );
+
+
+	if ( defined($ops{AlienBBClivestationid})) {
+
+		my $id = $ops{AlienBBClivestationid};
+		$song->pluginData(alienlivestationid => $id); 
+
+		my $http = Slim::Networking::SimpleAsyncHTTP->new(
+			\&goOnNowOK, \&gotOnNowError,
+				{
+					timeout  => 5,
+					liveclient => $client,
+				} 
+			);
+		
+		my ($day, $month, $year ) = (localtime)[3..5];
+# Add one month and then also change to range 1..12
+		$month  = ($month < 11) ? ($month+2): 1;
+		$day = 2;
+
+		my $enddate = sprintf('%4d-%02d-%02d',$year+1900, $month, $day);
+		$http->get("http://www0.rdthdo.bbc.co.uk/cgi-perl/api/query.pl?method=bbc.schedule.getProgrammes&channel_id=,$id&start=&end=$enddate&limit=2&detail=schedule");
+	} 
 
 
 # RTSP URL headers are scanned but it usually completes after "new" is called except when a Seek hgas been done
@@ -245,6 +285,41 @@ sub getMetadataFor {
 		}
 	}
 
+	if (defined($song->pluginData('alienlivestationid')  )) {
+		my $id    = $song->pluginData('alienlivestationid');
+		my $count = $song->pluginData('aliencount' );
+		$count = $count -1;
+		if ($count == 0) {
+			my $http = Slim::Networking::SimpleAsyncHTTP->new(
+				\&goOnNowOK, \&gotOnNowError,
+					{
+						timeout  => 5,
+						liveclient     => $client,
+					} 
+				);
+			my ($day, $month, $year ) = (localtime)[3..5];
+# Add one month and then also change to range 1..12
+			$month  = ($month < 11) ? ($month+2): 1;
+			$day = 2;
+			my $enddate = sprintf('%4d-%02d-%02d',$year+1900, $month, $day);
+			$http->get("http://www0.rdthdo.bbc.co.uk/cgi-perl/api/query.pl?method=bbc.schedule.getProgrammes&channel_id=,$id&start=&end=$enddate&limit=2&detail=schedule");
+		} else {
+			$song->pluginData( aliencount => $count );
+		}
+
+		return {
+			title    =>  $rtspmetadata->{'tracktitle'} . ' - ' . ($song->pluginData( 'alienonnowtext') || ' ') , 
+			artist   =>  $song->pluginData( 'alienonnowsynopsis'),
+			album	 =>  $song->pluginData( 'alienonnexttext') . " - " . $song->pluginData( 'alienonnextsynopsis'), 
+			duration =>  undef,
+			bitrate  =>  defined($track) ? $track->prettyBitRate : $rtspmetadata->{'avgbitrate'} ,
+			icon   => $icon,
+			cover  => $icon,
+			type   => 'RTSP',
+		};
+
+	}
+
 	return {
 		title    =>  $rtspmetadata->{'webtitle'}    || $rtspmetadata->{'title'}      || $rtspmetadata->{'tracktitle'} , 
 		artist   =>  $rtspmetadata->{'webartist'}   || $rtspmetadata->{'author'} ,
@@ -335,5 +410,51 @@ sub scanUrl {
 	
 	Slim::Utils::Scanner::Remote->scanURL($url, $args);
 }
+
+sub goOnNowOK
+{
+	my $http    = shift;
+	my $client  = $http->params('liveclient');
+	my $content = $http->content;
+
+	my $nowtext ;
+	my $nexttext;
+
+	my $song   = $client->streamingSong();
+
+	my $schedrec = XMLin( $content , 'forcearray' => [qw(programme)], 'keyattr' => []);
+	my $programmes = $schedrec->{'schedule'}->{'programme'};
+
+	$song->pluginData(alienonnowtext => $programmes->[0]->{'title'} );
+
+	if (defined($programmes->[1]->{'start'} ) ) {
+		$song->pluginData(alienonnexttext => '@ ' . strftime("%H:%M", localtime(str2time($programmes->[1]->{'start'}))) . ' - '. $programmes->[1]->{'title'} );
+	} else {
+		$song->pluginData(alienonnexttext => 'Next ' . $programmes->[1]->{'title'} );
+	}
+
+	$song->pluginData(alienonnowsynopsis  => defined ($programmes->[0]->{'synopsis'}) ?  $programmes->[0]->{'synopsis'} : ' ' );
+	$song->pluginData(alienonnextsynopsis => defined ($programmes->[1]->{'synopsis'}) ?  $programmes->[1]->{'synopsis'} : ' ' );
+
+	$song->pluginData(aliencount => DELAYCOUNT );
+
+	return undef;
+}
+
+sub gotOnNowError
+{
+	my $http    = shift;
+	my $client  = $http->params('liveclient');
+	my $content = $http->content;
+
+	my $song   = $client->streamingSong();
+
+	$song->pluginData(onnowcount => DELAYCOUNT );
+
+	$log->error("http request for Whats on failed ");
+	return undef;
+}
+
+
 
 1;
