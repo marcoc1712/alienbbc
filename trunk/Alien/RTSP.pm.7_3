@@ -126,10 +126,18 @@ sub new {
 	my $transcoder   = $args->{'transcoder'};
 	my $song         = $args->{'song'};
 
-	my $seekdata     = $args->{'song'}->{'seekdata'};
-	my $rtspmetadata = $args->{'song'}->{'scanData'}->{$url};
-
 	my $playlisturl  = Slim::Player::Playlist::url($client);
+
+	my $seekdata;
+	my $rtspmetadata;
+	if ($song->can("seekdata")) {
+		$seekdata     = $song->seekdata();
+		$rtspmetadata = $song->scanData()->{$url};
+	} else {
+		$seekdata     = $args->{'song'}->{'seekdata'};
+		$rtspmetadata = $args->{'song'}->{'scanData'}->{$url};
+	}
+
 	my $urldata      = get_urldata($playlisturl);
 	if (defined($urldata)) {
 		$rtspmetadata->{'webartist'}   = $urldata->{'artist'};
@@ -154,21 +162,23 @@ sub new {
 		'readTags' => 1
 	});
 
-	my ($baseplayurl,$paramstring) = split (/\?/,$playlisturl);
-	my %ops = map {
-			my ( $k, $v ) = split( '=' );
-			$k  => (uri_unescape( $v ))
-		} split( '&', $paramstring );
+	if ($playlisturl =~ m/AlienBBClivestationid/) {
+		my ($baseplayurl,$paramstring) = split (/\?/,$playlisturl);
+	
+		my %ops = map {
+				my ( $k, $v ) = split( '=' );
+				$k  => (uri_unescape( $v ))
+			} split( '&', $paramstring );
 
 
-	if ( defined($ops{AlienBBClivestationid})) {
+		if ( defined($ops{AlienBBClivestationid})) {
+			my $id = $ops{AlienBBClivestationid};
+			$song->pluginData( alienlivestationid => $id); 
+			$song->pluginData( aliencount         => DELAYCOUNT );
+			makeNowNextRequest($client,$id);
+		} 
+	}
 
-		my $id = $ops{AlienBBClivestationid};
-		$song->pluginData(alienlivestationid => $id); 
-		$song->pluginData(aliencount => DELAYCOUNT );
-		makeNowNextRequest($client,$id);
-
-	} 
 
 
 # RTSP URL headers are scanned but it usually completes after "new" is called except when a Seek hgas been done
@@ -200,7 +210,11 @@ sub new {
 			$url .= "?start=" . $newtime;
 		}
 
-		$client->playingSong->{startOffset} = $newtime;
+		if ($client->playingSong->can('startOffset')) {
+			$client->playingSong->startOffset( $newtime);
+		} else {
+			$client->playingSong->{startOffset} = $newtime;
+		};
 		$client->master->remoteStreamStartTime( Time::HiRes::time() - $newtime );
 	}
 
@@ -261,8 +275,15 @@ sub getMetadataFor {
 	
 	my $song = $client->currentSongForUrl($url);
 	my $track = $song->currentTrack() if $song;
-	my $rtspmetadata = $song->{'scanData'}->{$track->url} if $song;
+	my $rtspmetadata;
+	if ($song) {
 
+		if ( $song->can('scanData')) {
+			$rtspmetadata = $song->scanData()->{$track->url} if (defined($song->scanData() ));
+		} else {
+			$rtspmetadata = $song->{'scanData'}->{$track->url} ;
+		}
+	}
 
 	if (defined($track)) {
 		if ($track->title eq $url && defined ($rtspmetadata->{'title'} )) {
@@ -336,9 +357,20 @@ sub canSeekError {
 	my $url = $song->currentTrack()->url;
 	
 	my ($rtspmetadata, $mimetype);
-	if ($rtspmetadata = $song->{'scanData'}->{$url}) {
-		$mimetype = defined( $rtspmetadata->{'mimetype'}) ? $rtspmetadata->{'mimetype'} : "unassigned";	
-	} ;
+
+	if ($song->can('scanData')) {
+		if (defined($song->scanData())) {
+			if ( $rtspmetadata = $song->scanData()->{$url}) {
+				$mimetype = defined( $rtspmetadata->{'mimetype'}) ? $rtspmetadata->{'mimetype'} : "unassigned";	
+			}
+		} ;
+	} else {
+
+		if ($rtspmetadata = $song->{'scanData'}->{$url}) {
+			$mimetype = defined( $rtspmetadata->{'mimetype'}) ? $rtspmetadata->{'mimetype'} : "unassigned";	
+		}
+	} 
+
 	
 	if ($log->is_debug) {
 		my $ct = Slim::Music::Info::contentType($url);

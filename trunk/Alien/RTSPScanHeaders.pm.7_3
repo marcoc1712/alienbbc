@@ -166,8 +166,17 @@ sub _read {
 
 		# Save this metadata for the RTSP protocol handler to use
 		if ( my $song = $args->{'song'} ) {
-			$song->{'scanData'} ||= {}; 
-			$song->{'scanData'}->{$track->url} = {
+			my $sd;
+			if ($song->can('scanData')) {
+				$sd = $song->scanData();
+				if (!defined $sd) {
+					$song->scanData($sd = {});
+				} 
+			} else {
+				$song->{'scanData'} ||= {}; 
+				$sd = $song->{'scanData'};
+			}
+			$sd->{$track->url} = {
 				avgbitrate => $self->fields->{'avgbitrate'} ,
 				endtime    => $self->fields->{'endtime'},
 				title      => $self->fields->{'title'},

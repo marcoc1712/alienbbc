@@ -58,7 +58,7 @@
 #           - Patch to support noweb-sqlite branch
 #   2.6b1   - Add Now & Next info to RealAudio and WMA national live streams 
 #           - Update parsers for iPlayer wqeb site changes 
-
+#           - More patches to support noweb-sqlite branch
 
 package Plugins::Alien::Plugin;
 
