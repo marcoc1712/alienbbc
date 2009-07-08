@@ -165,22 +165,9 @@ sub new {
 
 		my $id = $ops{AlienBBClivestationid};
 		$song->pluginData(alienlivestationid => $id); 
+		$song->pluginData(aliencount => DELAYCOUNT );
+		makeNowNextRequest($client,$id);
 
-		my $http = Slim::Networking::SimpleAsyncHTTP->new(
-			\&goOnNowOK, \&gotOnNowError,
-				{
-					timeout  => 5,
-					liveclient => $client,
-				} 
-			);
-		
-		my ($day, $month, $year ) = (localtime)[3..5];
-# Add one month and then also change to range 1..12
-		$month  = ($month < 11) ? ($month+2): 1;
-		$day = 2;
-
-		my $enddate = sprintf('%4d-%02d-%02d',$year+1900, $month, $day);
-		$http->get("http://www0.rdthdo.bbc.co.uk/cgi-perl/api/query.pl?method=bbc.schedule.getProgrammes&channel_id=,$id&start=&end=$enddate&limit=2&detail=schedule");
 	} 
 
 
@@ -290,19 +277,7 @@ sub getMetadataFor {
 		my $count = $song->pluginData('aliencount' );
 		$count = $count -1;
 		if ($count == 0) {
-			my $http = Slim::Networking::SimpleAsyncHTTP->new(
-				\&goOnNowOK, \&gotOnNowError,
-					{
-						timeout  => 5,
-						liveclient     => $client,
-					} 
-				);
-			my ($day, $month, $year ) = (localtime)[3..5];
-# Add one month and then also change to range 1..12
-			$month  = ($month < 11) ? ($month+2): 1;
-			$day = 2;
-			my $enddate = sprintf('%4d-%02d-%02d',$year+1900, $month, $day);
-			$http->get("http://www0.rdthdo.bbc.co.uk/cgi-perl/api/query.pl?method=bbc.schedule.getProgrammes&channel_id=,$id&start=&end=$enddate&limit=2&detail=schedule");
+			makeNowNextRequest($client,$id);
 		} else {
 			$song->pluginData( aliencount => $count );
 		}
@@ -409,6 +384,29 @@ sub scanUrl {
 	my ( $class, $url, $args ) = @_;
 	
 	Slim::Utils::Scanner::Remote->scanURL($url, $args);
+}
+
+
+sub makeNowNextRequest
+{
+	my $client = shift;
+	my $id = shift;
+
+	my $http = Slim::Networking::SimpleAsyncHTTP->new(
+			\&goOnNowOK, \&gotOnNowError,
+				{
+					timeout  => 5,
+					liveclient     => $client,
+				} 
+			);
+	my ($day, $month, $year ) = (localtime)[3..5];
+# Need a date in the future  - Add one to month and then another one to change to range 1..12 and use 2nd day.
+	$month  = ($month < 11) ? ($month+2): 2;
+	$day = 2;
+	my $enddate = sprintf('%4d-%02d-%02d',$year+1900, $month, $day);
+ 
+	$http->get("http://www0.rdthdo.bbc.co.uk/cgi-perl/api/query.pl?method=bbc.schedule.getProgrammes&channel_id=,$id&start=&end=$enddate&limit=2&detail=schedule");
+
 }
 
 sub goOnNowOK

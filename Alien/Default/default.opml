@@ -4,19 +4,35 @@
     <expansionState></expansionState>
   </head>
   <body>
-	<outline text="BBC Live Streams">
+	<outline text="BBC Live Streams - WMA">
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r1.asx"    text="Radio 1 Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r2.asx"    text="Radio 2 Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r3.asx"    text="Radio 3 Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r4.asx"    text="Radio 4 Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r5l.asx"   text="5Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r5lsp.asx" text="5Live Extra" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r6.asx"    text="Radio 6 Music Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r7.asx"    text="BBC 7 Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/ran.asx"   text="BBC Asian Network Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r1x.asx"   text="Radio OneXtra 1 Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/worldservice/meta/tx/nb/live_eneuk_au_nb.asx" text="BBC World Service UK" type="audio" />
+	</outline>
+	<outline text="BBC Live Streams - RealAudio">
 		<outline URL="http://www.bbc.co.uk/radio/listen/live/r1.ram?AlienBBClivestationid=BBCROne"   icon="http://radiotime-logos.s3.amazonaws.com/s24939q.png" text="Radio 1 Live" type="audio" />
 		<outline URL="http://www.bbc.co.uk/radio/listen/live/r1x.ram?AlienBBClivestationid=OneXtra"  icon="http://radiotime-logos.s3.amazonaws.com/s20277q.png" text="Radio 1Xtra Live" type="audio" />
-		<outline URL="http://www.bbc.co.uk/radio/listen/live/r2.ram?AlienBBClivestationid=BBCRTwo"  icon="http://radiotime-logos.s3.amazonaws.com/s24940q.png" text="Radio 2 Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r2.ram?AlienBBClivestationid=BBCRTwo"   icon="http://radiotime-logos.s3.amazonaws.com/s24940q.png" text="Radio 2 Live" type="audio" />
 		<outline URL="http://www.bbc.co.uk/radio/listen/live/r3.ram?AlienBBClivestationid=BBCRThree" icon="http://radiotime-logos.s3.amazonaws.com/s24941q.png" text="Radio 3 Live" type="audio" />
 		<outline URL="http://www.bbc.co.uk/radio/listen/live/r4.ram?AlienBBClivestationid=BBCRFour"  icon="http://radiotime-logos.s3.amazonaws.com/s24942q.png" text="Radio 4 Live" type="audio" />
 		<outline URL="http://www.bbc.co.uk/radio/listen/live/r4lw.ram"                               icon="http://radiotime-logos.s3.amazonaws.com/s24942q.png" text="Radio 4 LW Live" type="audio" />
-		<outline URL="http://www.bbc.co.uk/radio/listen/live/r5l.ram?AlienBBClivestationid=BBCRFiveL"             icon="http://radiotime-logos.s3.amazonaws.com/s24943q.png" text="Radio 5 Live (Int'l)" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r5l.ram?AlienBBClivestationid=BBCRFiveL"   icon="http://radiotime-logos.s3.amazonaws.com/s24943q.png" text="Radio 5 Live (Int'l)" type="audio" />
 		<outline URL="http://www.bbc.co.uk/radio/listen/live/r5lsp.ram?AlienBBClivestationid=BBCRFiveX" icon="http://radiotime-logos.s3.amazonaws.com/s50459q.png" text="Radio 5 Live sports Extra (Int'l)" type="audio" />
 		<outline URL="http://www.bbc.co.uk/radio/listen/live/r6.ram?AlienBBClivestationid=BBCSixMU"     icon="http://radiotime-logos.s3.amazonaws.com/s44491q.png" text="Radio 6 Music Live" type="audio" />
-		<outline URL="http://www.bbc.co.uk/radio/listen/live/r7.ram?AlienBBClivestationid=BBCSeven"  icon="http://radiotime-logos.s3.amazonaws.com/s6839q.png" text="BBC 7 Live" type="audio" />
+		<outline URL="http://www.bbc.co.uk/radio/listen/live/r7.ram?AlienBBClivestationid=BBCSeven"     icon="http://radiotime-logos.s3.amazonaws.com/s6839q.png" text="BBC 7 Live" type="audio" />
 		<outline URL="http://www.bbc.co.uk/worldservice/meta/tx/nb/live_infent_au_nb.ram?AlienBBClivestationid=BBCWrld"  icon="http://radiotime-logos.s3.amazonaws.com/p38726q.png" text="BBC World Service (UK)" type="audio" />
+	</outline>
 
+	<outline text="BBC Live Local / Regional Streams">
+	
 		<outline icon="http://radiotime-logos.s3.amazonaws.com/a33829q.png" text="BBC Local Radio">
 			<outline URL="http://www.bbc.co.uk/england/realmedia/live/localradio/cumbria.ram"    icon="http://www.bbc.co.uk/iplayer/images/radio/bbc_radio_cumbria_640_360.jpg" text="BBC Cumbria" type="audio" />
 			<outline URL="http://www.bbc.co.uk/england/realmedia/live/localradio/newcastle.ram"  icon="http://www.bbc.co.uk/iplayer/images/radio/bbc_radio_newcastle_640_360.jpg" text="BBC Newcastle" type="audio" />

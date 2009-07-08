@@ -56,6 +56,8 @@
 #           - Update parsers for iPlayer site changes
 #           - Add thumbnail support to menus
 #           - Patch to support noweb-sqlite branch
+#   2.6b1   - Add Now & Next info to RealAudio and WMA national live streams 
+#           - Update parsers for iPlayer wqeb site changes 
 
 
 package Plugins::Alien::Plugin;
@@ -85,6 +87,8 @@ use Slim::Plugin::Favorites::Opml;
 
 use Plugins::Alien::RTSP;
 use Plugins::Alien::Settings;
+use Plugins::Alien::Metadata;
+
 
 my $menuUrl; # store the menu url here
 
@@ -140,6 +144,9 @@ sub initPlugin {
 
 	Plugins::Alien::Settings->importNewMenuFiles;
 	Plugins::Alien::RTSP->loadMenuIcon(menuUrl());
+	# Initialize WMA live stream metadata handler
+	Plugins::Alien::Metadata->init();
+
 }
 
 sub feed {
