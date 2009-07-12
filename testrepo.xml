@@ -8,22 +8,22 @@
 
   <plugins>
 
-	<plugin name="Alien" version="2.5beta1-7.3" target="win" minTarget="7.3" maxTarget="7.*">
+	  <plugin name="Alien" version="2.6b1-7.3" target="win" minTarget="7.3" maxTarget="7.*">
 	  <title lang="EN">Alien BBC</title>
 	  <desc  lang="EN">Beta test version of AlienBBC.</desc>
 	  <link>http://www.x2systems.com/alienbbc</link>
 	  <creator>AlienBBC Team</creator>
-	  <url>http://alienbbc.googlecode.com/files/alienbbc-windows-v2.5beta1-7.3.zip</url>
-	  <sha>c450106268f820e04f791b4a91a566dd3e3b6871</sha>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-windows-v2.6b1-7.3.zip</url>
+	  <sha>8c34aa279c468af2230c999953784bebf6a6571e</sha>
 	</plugin>
 
-	<plugin name="Alien" version="2.5beta1-7.3" target="mac|unix" minTarget="7.3" maxTarget="7.*">
+	<plugin name="Alien" version="2.6b1-7.3" target="mac|unix" minTarget="7.3" maxTarget="7.*">
 	  <title lang="EN">Alien BBC</title>
 	  <desc  lang="EN">Beta test version of AlienBBC.</desc>
 	  <link>http://www.x2systems.com/alienbbc</link>
 	  <creator>AlienBBC Team</creator>
-	  <url>http://alienbbc.googlecode.com/files/alienbbc-linux-v2.5beta1-7.3.zip</url>
-	  <sha>4c8fb9b26179e5439474ca0390e641bff6011a81</sha>
+	  <url>http://alienbbc.googlecode.com/files/alienbbc-linux-v2.6b1-7.3.zip</url>
+	  <sha>0845f67323cb91c46494872ec4c1c306b49843c5</sha>
 	</plugin>
 
   </plugins>
